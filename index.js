@@ -3,7 +3,7 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-// const {finance} = require('./models')
+const {user} = require('./models')
 const port = 3000
 
 app.use(express.json())
@@ -33,8 +33,8 @@ app.all('*',(req,res, next)=>{
 app.get('/Finances',(req,res)=>{
   res.send('index')
 })
-// app.get('/Finance/:id',async(req,res)=>{
-//   const budgetMoney = await finance.findAll(
+// app.get('/user/:id',async(req,res)=>{
+//   const budgetMoney = await user.findAll(
 //       {where: {
 //           id: req.params.id}}
 //   );
@@ -42,25 +42,29 @@ app.get('/Finances',(req,res)=>{
 //   res.send(budgetMoney);
 // })
 
-// app.get('/finance',async(req,res)=>{
-//   const Financebudget = await finance.findAll();
-//   console.log(Financebudget)
-//   res.send(Financebudget) ;
+// app.get('/user',async(req,res)=>{
+//   const userbudget = await user.findAll();
+//   console.log(userbudget)
+//   res.send(userbudget) ;
 // })
 
-// app.post('/Finances', async (req, res) => {
-//   const FinanceBudget = await Finances.create({
+app.post('/user', async (req, res) => {
+const userBudget = await user.create({
       
-//           income: req.body.income,
-//           expenses: req.body.expenses,
-//           savings: req.body.savings,
-//           surplus_deficit: req.body.surplus_deficit
+          Name: req.body.name,
+          Email: req.body.email,
+          Password: req.body.password,
+          ReEnterpassword: req.body.reEnterpassword,
+          Income: req.body.income,
+          Expenses: req.body.expenses,
+          Net: req.body.net,
+          Budget: req.body.budget
       
-//   })
-//   res.send('')
-//   console.log(FinanceBudget)
+  })
+  res.send('')
+  console.log(userBudget)
   
-// })
+})
 
 // app.put('/finances/:id',async(req,res)=>{
 //   const updateFinance = await finance.update({ income: req.body.income, expenses: req.body.expenses, savings: req.body.savings, surplus_deficit: req.body.surplus_deficit  },
