@@ -1,0 +1,24 @@
+const bcrypyt
+
+
+let Name: "./",
+password: password: "./",
+reEnterpassword: "./",
+email: "./"
+
+async function encryptPassword(){
+    const salt = bcrypyt.genSaltSync(saltRound)
+    console
+    
+    let encryptPassword
+bcrypt.genSalt(saltRounds, function(err, salt) {
+    bcrypt.hash(user.Password, salt, function(err, hash) {
+        // Store hash in your password DB.
+    });
+});
+bcrypt.compare(userPassword, hash, function(err, result) {
+    // result == true
+});
+bcrypt.compare("Please try again", hash, function(err, result) {
+    // result == false
+})

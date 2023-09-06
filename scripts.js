@@ -77,16 +77,16 @@ const userBudget = await user.create({
 //   res.send(updatedFinance)
 // })
 
-// app.delete('/Finances/:id',async(req,res)=>{
-//   await finance.destroy({
-//       where: {
-//           id: req.params.id
-//       }
-//     });
-//     res.send('Expense was been deleted')
-//     console.log(finance)
+app.delete('/user/email',async(req,res)=>{
+  await user.destroy({
+      where: {
+          id: req.params.id
+      }
+    });
+    res.send('User has been deleted')
+    console.log(user)
 
-// })
+})
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })
