@@ -48,7 +48,7 @@ app.get('/Finances',(req,res)=>{
 //   res.send(userbudget) ;
 // })
 
-app.post('/new-user', async (req, res) => {
+app.post('/sign-up', async (req, res) => {
 const newUser = await Users.create({
       
           Name: req.body.Name,
@@ -61,6 +61,21 @@ const newUser = await Users.create({
   console.log(newUser)
   
 })
+
+app.post('/sign-in', (req, res) => {
+    const email = req.body.Email;
+    const password = req.body.Password;
+    const returningUser = Users.findOne({
+        where:{
+            email:email, 
+    }})
+    if(!returningUser){
+        return res.status(400).send('invalid login');
+    }
+
+
+
+} )
 
 // app.put('/finances/:id',async(req,res)=>{
 //   const updateFinance = await finance.update({ income: req.body.income, expenses: req.body.expenses, savings: req.body.savings, surplus_deficit: req.body.surplus_deficit  },
