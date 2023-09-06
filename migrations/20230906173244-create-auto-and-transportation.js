@@ -1,5 +1,5 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+/** @type {import('sequelize').QueryInterface} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Auto_and_Transportations', {
@@ -16,14 +16,21 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       UserID: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users', // The name of the referenced table
+          key: 'id' // The name of the referenced column
+        },
+        allowNull: false, // Set this to false if you want the foreign key to be required
+        onUpdate: 'CASCADE', // Set the onUpdate behavior as needed
+        onDelete: 'CASCADE' // Set the onDelete behavior as needed
       },
       createdAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
       updatedAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       }
     });

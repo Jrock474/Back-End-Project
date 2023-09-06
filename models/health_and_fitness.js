@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define the association with the Users model
+      Health_and_Fitness.belongsTo(models.Users, {
+        foreignKey: 'UserID', // The name of the foreign key column in the Health_and_Fitness table
+        onDelete: 'CASCADE', // Set the onDelete behavior as needed
+        onUpdate: 'CASCADE' // Set the onUpdate behavior as needed
+      });
     }
   }
   Health_and_Fitness.init({

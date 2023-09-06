@@ -10,7 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define the association with the Users model
+      Travel.belongsTo(models.Users, {
+        foreignKey: 'UserID', // The name of the foreign key column in the Travel table
+        onDelete: 'CASCADE', // Set the onDelete behavior as needed
+        onUpdate: 'CASCADE' // Set the onUpdate behavior as needed
+      });
     }
   }
   Travel.init({
