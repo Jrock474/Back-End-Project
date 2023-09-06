@@ -2,7 +2,7 @@
 /** @type {import('sequelize').QueryInterface} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Shopping', {
+    await queryInterface.createTable('Expense_Transactions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -36,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Shopping');
+    await queryInterface.dropTable('Expense_Transactions');
   }
 };
