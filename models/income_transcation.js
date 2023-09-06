@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Food_and_Dining extends Model {
+  class Income_Transaction extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,20 +11,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // Define the association with the Users model
-      Food_and_Dining.belongsTo(models.Users, {
-        foreignKey: 'UserID', // The name of the foreign key column in the Food_and_Dining table
+      Income_Transaction.belongsTo(models.Users, {
+        foreignKey: 'UserID', // The name of the foreign key column in the Income_Transaction table
         onDelete: 'CASCADE', // Set the onDelete behavior as needed
         onUpdate: 'CASCADE' // Set the onUpdate behavior as needed
       });
     }
   }
-  Food_and_Dining.init({
+  Income_Transaction.init({
     Description: DataTypes.STRING,
     Amount: DataTypes.INTEGER,
     UserID: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Food_and_Dining',
+    modelName: 'Income_Transaction',
   });
-  return Food_and_Dining;
+  return Income_Transaction;
 };
