@@ -3,7 +3,7 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-const {user} = require('./models')
+const {Users} = require('./models')
 const port = 3000
 
 app.use(express.json())
@@ -48,21 +48,17 @@ app.get('/Finances',(req,res)=>{
 //   res.send(userbudget) ;
 // })
 
-app.post('/user', async (req, res) => {
-const userBudget = await user.create({
+app.post('/new-user', async (req, res) => {
+const newUser = await Users.create({
       
-          Name: req.body.name,
-          Email: req.body.email,
-          Password: req.body.password,
-          ReEnterpassword: req.body.reEnterpassword,
-          Income: req.body.income,
-          Expenses: req.body.expenses,
-          Net: req.body.net,
-          Budget: req.body.budget
+          Name: req.body.Name,
+          Email: req.body.Email,
+          Password: req.body.Password,
+          ReEnterpassword: req.body.ReEnterpassword,
       
   })
-  res.send('')
-  console.log(userBudget)
+  res.send(newUser)
+  console.log(newUser)
   
 })
 
