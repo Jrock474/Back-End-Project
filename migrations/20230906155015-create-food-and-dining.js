@@ -26,11 +26,11 @@ module.exports = {
         onDelete: 'CASCADE' // Set the onDelete behavior as needed
       },
       createdAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
       updatedAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       }
     });
