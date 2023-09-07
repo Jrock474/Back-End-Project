@@ -141,21 +141,29 @@ app.delete('/user/email',async(req,res)=>{
 
 })
 
-app.put('/addExpense', async (req, res) => {
+app.post('/addExpense/:UserID', async (req, res) => {
   try {
-    const { Description, Amount, UserID } = req.body;
+    const { Description, Amount } = req.body;
+    UserID = req.params.UserID
 
     // Validate the request data (e.g., check for required fields)
 
-    // Create a new expense transaction record in the database
+    // Create a new Expense transaction record in the database
     const newExpense = await Expense_Transaction.create({
       Description,
       Amount,
       UserID,
     });
 
-    // Return a success response
-    res.status(201).json({ message: 'Expense added successfully', data: newExpense });
+    // Retrieve all Expense transactions after adding the new one
+    const allExpense = await Expense_Transaction.findAll();
+
+    // Return a success response with all Expense transactions
+    res.status(201).json({
+      message: 'Expense added successfully',
+      data: newExpense,
+      allExpense, // Include all Expense transactions in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
