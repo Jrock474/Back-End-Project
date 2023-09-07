@@ -1,11 +1,14 @@
-<form action="/log-in" method="post">
+<form action="/login" method="post">
     <div>
-        <legend> Registration </legend>
+        <legend> Welcome Back! </legend>
             <% { %> 
-                Email:     <input type="email" name="email" placeholder="Email" /><br><br>
-                Password:  <input type="password" name="password"  placeholder="Password"/><br><br>
+                Email:     <input type="email" name="Email" placeholder="Email" /><br><br>
+                Password:  <input type="password" name="Password"  placeholder="Password"/><br><br>
             <% } %>
     </div>
-    <input type="submit" value="Registration"/><br><br>
+    <input type="submit" value="Log In"/><br><br>
+    <% if (invalidLogin) { %>
+        <p class="error-message"><%= invalidLogin %></p>
+    <% } %>
 </form>
 <a href ="/sign-up">Sign Up</a>

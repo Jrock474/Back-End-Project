@@ -3,8 +3,6 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-
-
 const {Users, Expense_Transaction} = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
@@ -43,18 +41,29 @@ app.get('/users-all',async(req,res)=>{
   res.send(allUsers)
 })
 
+//Sign In Page
+app.get('/login',(req,res)=>{
+  res.render('login', { invalidLogin: false })
+})
+
 //Home Page 
-app.get('/',(req,res)=>{
-    res.render('sign-up')
+app.get('/sign-up',(req,res)=>{
+    res.render('sign-up', { unmatchedPasswordError: false })
+})
+
+//Dashboard
+app.get('/dashboard',(req,res)=>{
+  res.render('dashboard')
 })
 
 
-//Registration endpoint
+
+//Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
   
   if (Password !== ReEnterPassword){
-    return res.render('sign-up', { error: 'Passwords must match' });
+    return res.render('sign-up', { unmatchedPasswordError: 'Passwords must match' });
   }
 
  //Encrypts Password
@@ -79,8 +88,6 @@ bcrypt.hash(Password, saltRounds, async(err, hash) => {
        console.error(error);
        return res.render('sign-up', { error: 'An error occurred during registration' });
    }
-    
-  
 });
 
 // Logging and rendering 'register' view after successful registration or error handling
@@ -93,18 +100,14 @@ bcrypt.hash(Password, saltRounds, async(err, hash) => {
 })
 
 // Sign in for Returning Users
-app.post('/sign-in', async(req, res) => {
+app.post('/login', async(req, res) => {
   const { Email, Password } = req.body;
   const userEnteredPassword = Password;
   
   const returningUser = await Users.findOne({
       where:{
           Email:Email,
-           
   }})
-  
-  res.render('dashbord')
-
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
@@ -112,12 +115,11 @@ app.post('/sign-in', async(req, res) => {
       return;
     }
     if (result) {
-      console.log('Passwords match!');
+      res.redirect('/dashboard');
     } else {
-      console.log('Passwords do not match.');
+      res.render('login', { invalidLogin: 'Invalid Login' });
     }
   });
-
 })
 
 // app.put('/finances/:id',async(req,res)=>{
