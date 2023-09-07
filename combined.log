@@ -145,3 +145,7 @@
 {"level":"info","message":{"body":{"Amount":80000,"Description":"Contract"},"level":"info","method":"POST","parameters":{"0":"/addIncome/1"},"timestamp":"9/7/2023, 2:31:51 PM","url":"/addIncome/1"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Amount":80000,"Description":"Contract"},"level":"info","method":"POST","parameters":{"0":"/addIncome/1"},"timestamp":"9/7/2023, 2:32:40 PM","url":"/addIncome/1"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Amount":200000,"Description":"Contract"},"level":"info","method":"POST","parameters":{"0":"/addIncome/3"},"timestamp":"9/7/2023, 2:33:21 PM","url":"/addIncome/3"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/userIncome/1"},"timestamp":"9/7/2023, 3:04:36 PM","url":"/userIncome/1"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/userIncome/3"},"timestamp":"9/7/2023, 3:04:45 PM","url":"/userIncome/3"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/userIncome/1"},"timestamp":"9/7/2023, 3:05:31 PM","url":"/userIncome/1"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/7/2023, 3:10:46 PM","url":"/users"},"service":"finance-budget"}
