@@ -3,7 +3,7 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-const {Users, Expense_Transaction} = require('./models')
+const {Users, Expense_Transaction, Income_Transaction } = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
@@ -162,9 +162,10 @@ app.put('/addExpense', async (req, res) => {
   }
 });
 
-app.put('/addIncome', async (req, res) => {
+app.post('/addIncome/:UserID', async (req, res) => {
   try {
-    const { Description, Amount, UserID } = req.body;
+    const { Description, Amount } = req.body;
+    UserID = req.params.UserID
 
     // Validate the request data (e.g., check for required fields)
 
@@ -175,13 +176,21 @@ app.put('/addIncome', async (req, res) => {
       UserID,
     });
 
-    // Return a success response
-    res.status(201).json({ message: 'Income added successfully', data: newIncome });
+    // Retrieve all income transactions after adding the new one
+    const allIncome = await Income_Transaction.findAll();
+
+    // Return a success response with all income transactions
+    res.status(201).json({
+      message: 'Income added successfully',
+      data: newIncome,
+      allIncome, // Include all income transactions in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 app.listen(port, () => {
