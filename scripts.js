@@ -3,7 +3,7 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-const {Users} = require('./models')
+const {Users, Expense_Transaction} = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
 
@@ -127,11 +127,26 @@ app.delete('/user/email',async(req,res)=>{
 
 })
 
-app.post('/addExpense', (req,res) => {
-  const description = req.body.Description;
-  const amount = req.body.Amount;
-  const userID = req.body.UserID
-})
+app.put('/addExpense', async (req, res) => {
+  try {
+    const { Description, Amount, UserID } = req.body;
+
+    // Validate the request data (e.g., check for required fields)
+
+    // Create a new expense transaction record in the database
+    const newExpense = await Expense_Transaction.create({
+      Description,
+      Amount,
+      UserID,
+    });
+
+    // Return a success response
+    res.status(201).json({ message: 'Expense added successfully', data: newExpense });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 app.listen(port, () => {
