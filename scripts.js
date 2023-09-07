@@ -51,6 +51,7 @@ app.get('/Finances',(req,res)=>{
 //   res.send(userbudget) ;
 // })
 
+<<<<<<< HEAD
 app.post('/new-user', async (req, res) => {
   const plaintextPassword = 'mypassword';
 const saltRounds = 10;
@@ -63,6 +64,10 @@ bcrypt.hash(plaintextPassword, saltRounds, (err, hash) => {
   console.log('Hashed password:', hash);
 });
   const newUser = await Users.create({
+=======
+app.post('/sign-up', async (req, res) => {
+const newUser = await Users.create({
+>>>>>>> 805598ed883eca89521f931305c711d7530e3552
       
           Name: req.body.Name,
           Email: req.body.Email,
@@ -74,6 +79,21 @@ bcrypt.hash(plaintextPassword, saltRounds, (err, hash) => {
   console.log(newUser)
   
 })
+
+app.post('/sign-in', (req, res) => {
+    const email = req.body.Email;
+    const password = req.body.Password;
+    const returningUser = Users.findOne({
+        where:{
+            email:email, 
+    }})
+    if(!returningUser){
+        return res.status(400).send('invalid login');
+    }
+
+
+
+} )
 
 // app.put('/finances/:id',async(req,res)=>{
 //   const updateFinance = await finance.update({ income: req.body.income, expenses: req.body.expenses, savings: req.body.savings, surplus_deficit: req.body.surplus_deficit  },
