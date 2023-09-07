@@ -3,6 +3,8 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
+const {Users} = require('./models')
+const bcrypt = require("bcrypt");
 const {Users, Expense_Transaction} = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
@@ -10,9 +12,6 @@ const bcrypt = require('bcrypt')
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-
-
-// parse application/json
 app.use(bodyParser.json())
 
 const logger = winston.createLogger({
@@ -36,24 +35,15 @@ app.all('*',(req,res, next)=>{
   next()
 })
 
+app.get('/users-all',async(req,res)=>{
+  const allUsers = await Users.findAll()
+  res.send(allUsers)
+})
 
 app.get('/',(req,res)=>{
-    res.render('login')
+    res.render('sign-up')
 })
-// app.get('/user/:id',async(req,res)=>{
-//   const budgetMoney = await user.findAll(
-//       {where: {
-//           id: req.params.id}}
-//   );
-//   console.log(budgetMoney)
-//   res.send(budgetMoney);
-// })
 
-// app.get('/user',async(req,res)=>{
-//   const userbudget = await user.findAll();
-//   console.log(userbudget)
-//   res.send(userbudget) ;
-// })
 
 app.get('/users', async(req,res) => {
   const allUsers = await Users.findAll();
@@ -61,43 +51,50 @@ app.get('/users', async(req,res) => {
   console.log(`That's all folks!`)
 })
 
+
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-  try {
-   const newUser = await Users.create({
-      Name: Name,
-      Email: Email,
-      Password: Password,
-      ReEnterPassword: ReEnterPassword
-    });
-    res.send(newUser)
-  } catch (error) {
-    console.error(error);
-    return res.render('sign-up', { error: 'An error occurred during registration' });
+  
+  if (Password !== ReEnterPassword){
+    return res.render('sign-up', { error: 'Passwords must match' });
   }
 
-  // Logging and rendering 'register' view after successful registration or error handling
+ //Encrypts Password
+const saltRounds = 10;
+bcrypt.hash(Password, saltRounds, async(err, hash) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log('Hashed password:', hash);
+
+  // If successful, inserts Data into Database as a new User
+  try {
+    const newUser = await Users.create({
+       Name: Name,
+       Email: Email,
+       Password: hash,
+       ReEnterPassword: hash
+     });
+     res.send(newUser)
+   } catch (error) {
+       console.error(error);
+       return res.render('sign-up', { error: 'An error occurred during registration' });
+   }
+    
+  
+});
+// Logging and rendering 'register' view after successful registration or error handling
   console.log({
     Name: Name,
     Email: Email,
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
-
-  const plaintextPassword = 'mypassword';
-  const saltRounds = 10;
-
-  bcrypt.hash(plaintextPassword, saltRounds, (err, hash) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log('Hashed password:', hash);
-  });
-
   
 })
 
+// Sign in for Returning Users
 app.post('/sign-in', (req, res) => {
     const Email = req.body.Email;
     // const password = req.body.Password;
@@ -109,6 +106,19 @@ app.post('/sign-in', (req, res) => {
         return res.status(400).send('invalid login');
     }
     res.render('dashbord')
+
+    bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      if (result) {
+        console.log('Passwords match!');
+      } else {
+        console.log('Passwords do not match.');
+      }
+    });
+
 })
 
 // app.put('/finances/:id',async(req,res)=>{
@@ -123,13 +133,13 @@ app.post('/sign-in', (req, res) => {
 // })
 
 app.delete('/user/email',async(req,res)=>{
-  await user.destroy({
+  await Users.destroy({
       where: {
           id: req.params.id
       }
     });
     res.send('User has been deleted')
-    console.log(user)
+    console.log(Users)
 
 })
 
