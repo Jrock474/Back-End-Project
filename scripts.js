@@ -52,7 +52,17 @@ app.get('/Finances',(req,res)=>{
 // })
 
 app.post('/new-user', async (req, res) => {
-const newUser = await Users.create({
+  const plaintextPassword = 'mypassword';
+const saltRounds = 10;
+
+bcrypt.hash(plaintextPassword, saltRounds, (err, hash) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log('Hashed password:', hash);
+});
+  const newUser = await Users.create({
       
           Name: req.body.Name,
           Email: req.body.Email,
