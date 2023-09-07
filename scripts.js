@@ -6,7 +6,7 @@ const winston = require('winston');
 const {Users, Expense_Transaction} = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
-
+const bcrypt = require('bcrypt')
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -54,6 +54,12 @@ app.get('/',(req,res)=>{
 //   console.log(userbudget)
 //   res.send(userbudget) ;
 // })
+
+app.get('/users', async(req,res) => {
+  const allUsers = await Users.findAll();
+  res.send(allUsers)
+  console.log(`That's all folks!`)
+})
 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
