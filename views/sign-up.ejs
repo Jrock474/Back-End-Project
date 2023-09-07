@@ -10,6 +10,9 @@
                 <% } %>
             </div>
             <input type="submit" value="Sign Up"/><br><br>
+            <% if (unmatchedPasswordError) { %>
+                <p class="error-message"><%= unmatchedPasswordError %></p>
+            <% } %>
         </form>
         <div>Have an account? <a href ="/login">Log In</a></div>
-    </body>
+</body>
