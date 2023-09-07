@@ -2,7 +2,7 @@
 /** @type {import('sequelize').QueryInterface} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Expense_Transactions', {
+    await queryInterface.createTable('Income_Transactions', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,6 +14,9 @@ module.exports = {
       },
       Amount: {
         type: Sequelize.INTEGER
+      },
+      Type: {
+        type: Sequelize.STRING
       },
       UserID: {
         type: Sequelize.INTEGER,
@@ -36,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Expense_Transactions');
+    await queryInterface.dropTable('Income_Transactions');
   }
 };
