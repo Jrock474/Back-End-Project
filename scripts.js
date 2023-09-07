@@ -5,9 +5,10 @@ const pg = require('pg');
 const winston = require('winston');
 const {Users} = require('./models')
 const bcrypt = require("bcrypt");
+const {Users, Expense_Transaction} = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
-
+const bcrypt = require('bcrypt')
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -43,7 +44,14 @@ app.get('/',(req,res)=>{
     res.render('sign-up')
 })
 
-// Allows Users to insert into parameters for registration
+
+app.get('/users', async(req,res) => {
+  const allUsers = await Users.findAll();
+  res.send(allUsers)
+  console.log(`That's all folks!`)
+})
+
+
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
   
@@ -134,6 +142,50 @@ app.delete('/user/email',async(req,res)=>{
     console.log(Users)
 
 })
+
+app.put('/addExpense', async (req, res) => {
+  try {
+    const { Description, Amount, UserID } = req.body;
+
+    // Validate the request data (e.g., check for required fields)
+
+    // Create a new expense transaction record in the database
+    const newExpense = await Expense_Transaction.create({
+      Description,
+      Amount,
+      UserID,
+    });
+
+    // Return a success response
+    res.status(201).json({ message: 'Expense added successfully', data: newExpense });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.put('/addIncome', async (req, res) => {
+  try {
+    const { Description, Amount, UserID } = req.body;
+
+    // Validate the request data (e.g., check for required fields)
+
+    // Create a new Income transaction record in the database
+    const newIncome = await Income_Transaction.create({
+      Description,
+      Amount,
+      UserID,
+    });
+
+    // Return a success response
+    res.status(201).json({ message: 'Income added successfully', data: newIncome });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })
