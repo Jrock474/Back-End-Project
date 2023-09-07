@@ -148,6 +148,27 @@ app.put('/addExpense', async (req, res) => {
   }
 });
 
+app.put('/addIncome', async (req, res) => {
+  try {
+    const { Description, Amount, UserID } = req.body;
+
+    // Validate the request data (e.g., check for required fields)
+
+    // Create a new Income transaction record in the database
+    const newIncome = await Income_Transaction.create({
+      Description,
+      Amount,
+      UserID,
+    });
+
+    // Return a success response
+    res.status(201).json({ message: 'Income added successfully', data: newIncome });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
