@@ -98,6 +98,14 @@ app.post('/sign-in', (req, res) => {
 //     console.log(finance)
 
 // })
+
+app.post('/addExpense', (req,res) => {
+  const description = req.body.Description;
+  const amount = req.body.Amount;
+  const userID = req.body.UserID
+})
+
+
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })
