@@ -3,8 +3,8 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-const {Users} = require('./models')
-const bcrypt = require("bcrypt");
+
+
 const {Users, Expense_Transaction} = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
@@ -23,6 +23,8 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'combined.log' }),
   ],
 });
+
+//Winston logger
 app.all('*',(req,res, next)=>{
   logger.info({
       level: 'info',
@@ -35,23 +37,19 @@ app.all('*',(req,res, next)=>{
   next()
 })
 
+//Displays all Users in Database
 app.get('/users-all',async(req,res)=>{
   const allUsers = await Users.findAll()
   res.send(allUsers)
 })
 
+//Home Page 
 app.get('/',(req,res)=>{
     res.render('sign-up')
 })
 
 
-app.get('/users', async(req,res) => {
-  const allUsers = await Users.findAll();
-  res.send(allUsers)
-  console.log(`That's all folks!`)
-})
-
-
+//Registration endpoint
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
   
@@ -84,6 +82,7 @@ bcrypt.hash(Password, saltRounds, async(err, hash) => {
     
   
 });
+
 // Logging and rendering 'register' view after successful registration or error handling
   console.log({
     Name: Name,
@@ -91,33 +90,33 @@ bcrypt.hash(Password, saltRounds, async(err, hash) => {
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
-  
 })
 
 // Sign in for Returning Users
-app.post('/sign-in', (req, res) => {
-    const Email = req.body.Email;
-    // const password = req.body.Password;
-    const returningUser = Users.findOne({
-        where:{
-            Email:Email, 
-    }})
-    if(!returningUser){
-        return res.status(400).send('invalid login');
-    }
-    res.render('dashbord')
+app.post('/sign-in', async(req, res) => {
+  const { Email, Password } = req.body;
+  const userEnteredPassword = Password;
+  
+  const returningUser = await Users.findOne({
+      where:{
+          Email:Email,
+           
+  }})
+  
+  res.render('dashbord')
 
-    bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      if (result) {
-        console.log('Passwords match!');
-      } else {
-        console.log('Passwords do not match.');
-      }
-    });
+  const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
+  bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    if (result) {
+      console.log('Passwords match!');
+    } else {
+      console.log('Passwords do not match.');
+    }
+  });
 
 })
 
@@ -132,6 +131,7 @@ app.post('/sign-in', (req, res) => {
 //   res.send(updatedFinance)
 // })
 
+//Deletes User based off of provided Email
 app.delete('/user/email',async(req,res)=>{
   await Users.destroy({
       where: {
