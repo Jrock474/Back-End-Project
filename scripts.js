@@ -21,6 +21,8 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'combined.log' }),
   ],
 });
+
+//Winston logger
 app.all('*', (req, res, next) => {
   logger.info({
     level: 'info',
@@ -33,28 +35,35 @@ app.all('*', (req, res, next) => {
   next()
 })
 
+//Displays all Users in Database
 app.get('/users-all', async (req, res) => {
   const allUsers = await Users.findAll()
   res.send(allUsers)
 })
 
-app.get('/', (req, res) => {
-  res.render('sign-up')
+//Sign In Page
+app.get('/login',(req,res)=>{
+  res.render('login', { invalidLogin: false })
+})
+
+//Home Page 
+app.get('/sign-up',(req,res)=>{
+    res.render('sign-up', { unmatchedPasswordError: false })
+})
+
+//Dashboard
+app.get('/dashboard',(req,res)=>{
+  res.render('dashboard')
 })
 
 
-app.get('/users', async (req, res) => {
-  const allUsers = await Users.findAll();
-  res.send(allUsers)
-  console.log(`That's all folks!`)
-})
 
-
+//Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-
-  if (Password !== ReEnterPassword) {
-    return res.render('sign-up', { error: 'Passwords must match' });
+  
+  if (Password !== ReEnterPassword){
+    return res.render('sign-up', { unmatchedPasswordError: 'Passwords must match' });
   }
 
   //Encrypts Password
@@ -66,58 +75,51 @@ app.post('/sign-up', async (req, res) => {
     }
     console.log('Hashed password:', hash);
 
-    // If successful, inserts Data into Database as a new User
-    try {
-      const newUser = await Users.create({
-        Name: Name,
-        Email: Email,
-        Password: hash,
-        ReEnterPassword: hash
-      });
-      res.send(newUser)
-    } catch (error) {
-      console.error(error);
-      return res.render('sign-up', { error: 'An error occurred during registration' });
-    }
+  // If successful, inserts Data into Database as a new User
+  try {
+    const newUser = await Users.create({
+       Name: Name,
+       Email: Email,
+       Password: hash,
+       ReEnterPassword: hash
+     });
+     res.send(newUser)
+   } catch (error) {
+       console.error(error);
+       return res.render('sign-up', { error: 'An error occurred during registration' });
+   }
+});
 
-
-  });
-  // Logging and rendering 'register' view after successful registration or error handling
+// Logging and rendering 'register' view after successful registration or error handling
   console.log({
     Name: Name,
     Email: Email,
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
-
 })
 
 // Sign in for Returning Users
-app.post('/sign-in', (req, res) => {
-  const Email = req.body.Email;
-  // const password = req.body.Password;
-  const returningUser = Users.findOne({
-    where: {
-      Email: Email,
-    }
-  })
-  if (!returningUser) {
-    return res.status(400).send('invalid login');
-  }
-  res.render('dashbord')
-
+app.post('/login', async(req, res) => {
+  const { Email, Password } = req.body;
+  const userEnteredPassword = Password;
+  
+  const returningUser = await Users.findOne({
+      where:{
+          Email:Email,
+  }})
+  const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
       console.error(err);
       return;
     }
     if (result) {
-      console.log('Passwords match!');
+      res.redirect('/dashboard');
     } else {
-      console.log('Passwords do not match.');
+      res.render('login', { invalidLogin: 'Invalid Login' });
     }
   });
-
 })
 
 // app.put('/finances/:id',async(req,res)=>{
@@ -131,7 +133,8 @@ app.post('/sign-in', (req, res) => {
 //   res.send(updatedFinance)
 // })
 
-app.delete('/user/email', async (req, res) => {
+//Deletes User based off of provided Email
+app.delete('/user/email',async(req,res)=>{
   await Users.destroy({
     where: {
       id: req.params.id
