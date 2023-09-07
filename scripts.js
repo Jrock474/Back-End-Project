@@ -11,8 +11,10 @@ app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
+
 // parse application/json
 app.use(bodyParser.json())
+
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
@@ -75,6 +77,18 @@ app.post('/sign-up', async (req, res) => {
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
+
+  const plaintextPassword = 'mypassword';
+  const saltRounds = 10;
+
+  bcrypt.hash(plaintextPassword, saltRounds, (err, hash) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('Hashed password:', hash);
+  });
+
   
 })
 
@@ -102,16 +116,16 @@ app.post('/sign-in', (req, res) => {
 //   res.send(updatedFinance)
 // })
 
-// app.delete('/Finances/:id',async(req,res)=>{
-//   await finance.destroy({
-//       where: {
-//           id: req.params.id
-//       }
-//     });
-//     res.send('Expense was been deleted')
-//     console.log(finance)
+app.delete('/user/email',async(req,res)=>{
+  await user.destroy({
+      where: {
+          id: req.params.id
+      }
+    });
+    res.send('User has been deleted')
+    console.log(user)
 
-// })
+})
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })
