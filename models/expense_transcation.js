@@ -3,24 +3,28 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Expense_Transcation extends Model {
+  class Expense_Transaction extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define the association with the Users model
+      Expense_Transaction.belongsTo(models.Users, {
+        foreignKey: 'UserID', // The name of the foreign key column in the Expense_Transaction table
+        onDelete: 'CASCADE', // Set the onDelete behavior as needed
+        onUpdate: 'CASCADE' // Set the onUpdate behavior as needed
+      });
     }
   }
-  Expense_Transcation.init({
+  Expense_Transaction.init({
     Description: DataTypes.STRING,
     Amount: DataTypes.INTEGER,
-    Type: DataTypes.STRING,
     UserID: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Expense_Transcation',
+    modelName: 'Expense_Transaction',
   });
-  return Expense_Transcation;
+  return Expense_Transaction;
 };
