@@ -104,11 +104,14 @@ app.post('/login', async(req, res) => {
   const { Email, Password } = req.body;
   const userEnteredPassword = Password;
   
+  //Finds and compares provided email and password to the Database
   const returningUser = await Users.findOne({
       where:{
           Email:Email,
   }})
-  const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
+
+  //Logs in User if the provided Email and Password matches the one in the Database
+  const storedHashedPassword = returningUser.Password; 
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
       console.error(err);
