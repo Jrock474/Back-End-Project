@@ -8,6 +8,9 @@ const port = 3000
 
 app.use(express.json())
 
+
+
+
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
@@ -48,8 +51,18 @@ app.get('/Finances',(req,res)=>{
 //   res.send(userbudget) ;
 // })
 
-app.post('/sign-up', async (req, res) => {
-const newUser = await Users.create({
+app.post('/new-user', async (req, res) => {
+  const plaintextPassword = 'mypassword';
+const saltRounds = 10;
+
+bcrypt.hash(plaintextPassword, saltRounds, (err, hash) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log('Hashed password:', hash);
+});
+  const newUser = await Users.create({
       
           Name: req.body.Name,
           Email: req.body.Email,
@@ -88,16 +101,16 @@ app.post('/sign-in', (req, res) => {
 //   res.send(updatedFinance)
 // })
 
-// app.delete('/Finances/:id',async(req,res)=>{
-//   await finance.destroy({
-//       where: {
-//           id: req.params.id
-//       }
-//     });
-//     res.send('Expense was been deleted')
-//     console.log(finance)
+app.delete('/user/email',async(req,res)=>{
+  await user.destroy({
+      where: {
+          id: req.params.id
+      }
+    });
+    res.send('User has been deleted')
+    console.log(user)
 
-// })
+})
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })
