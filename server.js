@@ -4,9 +4,6 @@ const bcrypt = require("bcrypt");
 app.use(express.json())
 const port = 3000
 
-const ejs = require("budget-home.ejs");
-const css = require("budget-home.css");
-
 app.get('/Finance', (req, res)=>{
     res.send("Finance")
 })
