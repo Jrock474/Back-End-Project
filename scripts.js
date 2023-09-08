@@ -54,7 +54,7 @@ app.get('/sign-up', (req, res) => {
 
 //Dashboard
 app.get('/dashboard', (req, res) => {
-  res.render('dashboard')
+  res.render('dashboard', {userName: ''})
 })
 
 
@@ -148,6 +148,7 @@ app.post('/login', async (req, res) => {
       Email: Email,
     }
   })
+  const userName = returningUser.Name;
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
@@ -155,7 +156,7 @@ app.post('/login', async (req, res) => {
       return;
     }
     if (result) {
-      res.redirect('/dashboard');
+      res.render('dashboard', {userName});
     } else {
       res.render('login', { errorMessage: 'Invalid Login' });
     }
