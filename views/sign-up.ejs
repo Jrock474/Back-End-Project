@@ -6,12 +6,12 @@
                 Name: <input type="text" name="Name" placeholder="Name" value="Jordan" /><br><br>
                 Email:     <input type="email" name="Email" placeholder="Email" value="w_jordan53@yahoo.com" /><br><br>
                 Password:  <input type="password" name="Password"  placeholder="Password" value="Pass123"/><br><br>
-                ReEnterPassword:  <input type="password" name="ReEnterPassword" placeholder="Re-enter password" value="Pass123"/><br><br>
+                ReEnterPassword:  <input type="password" name="ReEnterPassword" placeholder="Re-enter password" value="Pass123" /><br><br>
                 <% } %>
             </div>
             <input type="submit" value="Sign Up"/><br><br>
-            <% if (unmatchedPasswordError) { %>
-                <p class="error-message"><%= unmatchedPasswordError %></p>
+            <% if (errorMessage) { %>
+                <p class="error-message"><%= errorMessage %></p>
             <% } %>
         </form>
         <div>Have an account? <a href ="/login">Log In</a></div>
