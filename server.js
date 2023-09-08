@@ -2,7 +2,7 @@ const express = require("express")
 const app = express()
 const bcrypt = require("bcrypt");
 app.use(express.json())
-const port = 3000
+const port = 8080
 
 app.get('/Finance', (req, res)=>{
     res.send("Finance")
@@ -27,6 +27,6 @@ bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
   }
 });
 })
-app.listen(3000, ()=>{
+app.listen(port, ()=>{
 console.log(`Server is running on port ${port}`)
 })

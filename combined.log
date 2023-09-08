@@ -132,3 +132,22 @@
 {"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"timestamp":"9/7/2023, 10:20:01 AM","url":"/sign-up"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/7/2023, 11:14:24 AM","url":"/users"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Email":"imissmydog123@gmail.com","Name":"John Wick","Password":"longlivefluffy","ReEnterPassword":"longlivefluffy"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/7/2023, 11:14:36 AM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/Finance"},"timestamp":"9/8/2023, 9:30:54 AM","url":"/Finance"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/"},"timestamp":"9/8/2023, 9:35:18 AM","url":"/"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/users-all"},"timestamp":"9/8/2023, 9:36:09 AM","url":"/users-all"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home"},"timestamp":"9/8/2023, 9:40:30 AM","url":"/budget-home"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home"},"timestamp":"9/8/2023, 9:41:00 AM","url":"/budget-home"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home.css"},"timestamp":"9/8/2023, 9:41:00 AM","url":"/budget-home.css"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/script.js"},"timestamp":"9/8/2023, 9:41:00 AM","url":"/script.js"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home"},"timestamp":"9/8/2023, 9:41:26 AM","url":"/budget-home"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home.css"},"timestamp":"9/8/2023, 9:41:26 AM","url":"/budget-home.css"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/script.js"},"timestamp":"9/8/2023, 9:41:26 AM","url":"/script.js"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home"},"timestamp":"9/8/2023, 9:41:28 AM","url":"/budget-home"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home.css"},"timestamp":"9/8/2023, 9:41:28 AM","url":"/budget-home.css"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/script.js"},"timestamp":"9/8/2023, 9:41:28 AM","url":"/script.js"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home"},"timestamp":"9/8/2023, 9:41:29 AM","url":"/budget-home"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home.css"},"timestamp":"9/8/2023, 9:41:29 AM","url":"/budget-home.css"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/script.js"},"timestamp":"9/8/2023, 9:41:29 AM","url":"/script.js"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home"},"timestamp":"9/8/2023, 9:41:31 AM","url":"/budget-home"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/budget-home.css"},"timestamp":"9/8/2023, 9:41:31 AM","url":"/budget-home.css"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/script.js"},"timestamp":"9/8/2023, 9:41:31 AM","url":"/script.js"},"service":"finance-budget"}

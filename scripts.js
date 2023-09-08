@@ -49,6 +49,11 @@ app.get('/users', async(req,res) => {
   console.log(`That's all folks!`)
 })
 
+app.get("/budget-home", async(req,res) => {
+  // const budget_home = await 
+  res.render ("budget-home")}
+)
+
 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
