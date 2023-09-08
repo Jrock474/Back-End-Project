@@ -36,7 +36,7 @@ app.all('*', (req, res, next) => {
 })
 
 //Displays all Users in Database
-app.get('/users-all', async (req, res) => {
+app.get('/users', async (req, res) => {
   const allUsers = await Users.findAll()
 
   res.send(allUsers)
@@ -122,7 +122,7 @@ app.post('/sign-up', async (req, res) => {
         Password: hash,
         ReEnterPassword: hash
       });
-      res.send(newUser)
+      res.redirect('login')
     } catch (error) {
       console.error(error);
       return res.render('sign-up', { error: 'An error occurred during registration' });
@@ -192,15 +192,29 @@ app.post('/addExpense/:UserID', async (req, res) => {
 
     // Validate the request data
     if (!Description || !Amount) {
-      return res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
-    }
-
-    if (Description.length > 50) {
-      return res.status(400).json({ error: "Description should be under 50 characters" });
-    }
-
-    if (typeof Amount !== "number") {
-      return res.status(400).json({ error: "'Amount' must be a number" });
+      res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Both 'Description' and 'Amount' are required"
+      });
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(Description)) {
+      res.status(400).json({ error: "Description should only contain letters, numbers, and spaces" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should only contain letters, numbers, and spaces"
+      });
+    } else if (Description.length > 50) {
+      res.status(400).json({ error: "Description should be under 50 characters" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should be under 50 characters"
+      });
+    } else if (typeof Amount !== "number") {
+      res.status(400).json({ error: "'Amount' must be a number" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "'Amount' must be a number"
+      });
     }
 
     // Create a new expense transaction record in the database
@@ -246,17 +260,31 @@ app.post('/addIncome/:UserID', async (req, res) => {
     const { Description, Amount } = req.body;
     const UserID = req.params.UserID;
 
-    // Validate the request data
+    // Validate the request dat else if (!Description || !Amount) {
     if (!Description || !Amount) {
-      return res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
-    }
-
-    if (Description.length > 50) {
-      return res.status(400).json({ error: "Description should be under 50 characters" });
-    }
-
-    if (typeof Amount !== "number") {
-      return res.status(400).json({ error: "'Amount' must be a number" });
+      res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Both 'Description' and 'Amount' are required"
+      });
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(Description)) {
+      res.status(400).json({ error: "Description should only contain letters, numbers, and spaces" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should only contain letters, numbers, and spaces"
+      });
+    } else if (Description.length > 50) {
+      res.status(400).json({ error: "Description should be under 50 characters" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should be under 50 characters"
+      });
+    } else if (typeof Amount !== "number") {
+      res.status(400).json({ error: "'Amount' must be a number" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "'Amount' must be a number"
+      });
     }
 
     // Create a new Income transaction record in the database
