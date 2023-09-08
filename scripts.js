@@ -1,6 +1,20 @@
-const express = require("express");
-const sqlize = require('sequelize');
+var createError = require('http-errors');
+var express = require('express');
+var BodyParser = require('body-parser');
+// var logger = require('morgan');
+var path = require('path');
+
+// var indexRouter = require('./routes/index');
+// var userRouter = require('./routes/users');
+
 const app = express();
+
+app.set('views', path.join(__dirname, 'Public'));
+app.set('view engine', 'ejs');
+
+// app.use(logger('dev'));
+
+const sqlize = require('sequelize');
 const pg = require('pg');
 const winston = require('winston');
 const {Users, Expense_Transaction} = require('./models')
@@ -9,8 +23,13 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 app.set('view engine', 'ejs');
 app.use(express.json())
+app.use(express.urlencoded({ extended: false}));
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.json)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
 
 const logger = winston.createLogger({
   level: 'info',
