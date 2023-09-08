@@ -38,6 +38,7 @@ app.all('*', (req, res, next) => {
 //Displays all Users in Database
 app.get('/users', async (req, res) => {
   const allUsers = await Users.findAll()
+
   res.send(allUsers)
 })
 
@@ -234,7 +235,9 @@ app.post('/addIncome/:UserID', async (req, res) => {
   }
 });
 
+const updateFinances = () => {
 
+}
 
 
 app.get('/userIncome/:UserID', async (req, res) => {
