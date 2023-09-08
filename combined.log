@@ -441,6 +441,30 @@
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 1:12:43 PM","url":"/login"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 1:12:48 PM","url":"/login"},"service":"finance-budget"}
 {"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"timestamp":"9/8/2023, 1:12:49 PM","url":"/dashboard"},"service":"finance-budget"}
+<<<<<<< HEAD
+{"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/8/2023, 2:09:01 PM","url":"/users"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/8/2023, 2:09:29 PM","url":"/users"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Amount":50000,"Description":"@Sponsorships"},"level":"info","method":"POST","parameters":{"0":"/addIncome/1"},"timestamp":"9/8/2023, 2:10:22 PM","url":"/addIncome/1"},"service":"finance-budget"}
+{"level":"error","message":"Description should only contain letters, numbers, and spaces","service":"finance-budget","timestamp":"9/8/2023, 2:10:22 PM"}
+{"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/8/2023, 2:18:33 PM","url":"/users"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Amount":5000,"Description":"Necklace for Antonella"},"level":"info","method":"POST","parameters":{"0":"/addExpense/1"},"timestamp":"9/8/2023, 2:18:47 PM","url":"/addExpense/1"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/8/2023, 2:18:52 PM","url":"/users"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"pm@gmail.com","Name":"Winston Churchill","Password":"UKrocks","ReEnterPassword":"UKrocks"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:19:10 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"pm@gmail.com","Name":"Winston Churchill","Password":"UKrocks123","ReEnterPassword":"UKrocks123"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:19:45 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"password":"theGoat!","username":"LionelMessi"},"level":"info","method":"GET","parameters":{"0":"/users"},"timestamp":"9/8/2023, 2:19:54 PM","url":"/users"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/"},"timestamp":"9/8/2023, 2:28:06 PM","url":"/"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/Users"},"timestamp":"9/8/2023, 2:28:14 PM","url":"/Users"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/favicon.ico"},"timestamp":"9/8/2023, 2:28:14 PM","url":"/favicon.ico"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"timestamp":"9/8/2023, 2:28:49 PM","url":"/login"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:29:48 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"test@test.com","Name":"Test","Password":"test12345","ReEnterPassword":"test12345"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:30:19 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:31:52 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"test@test.com","Name":"Test","Password":"Pass123","ReEnterPassword":"Pass123"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:31:58 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"test2@gmail.com","Name":"test2","Password":"Test12345","ReEnterPassword":"Test12345"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:32:35 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"texas@gmail.com","Name":"Sandy Cheeks","Password":"iwanttogohome","ReEnterPassword":"iwanttogohome"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"timestamp":"9/8/2023, 2:34:04 PM","url":"/sign-up"},"service":"finance-budget"}
+{"level":"info","message":{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"timestamp":"9/8/2023, 2:34:04 PM","url":"/login"},"service":"finance-budget"}
+{"level":"info","message":{"body":{"Email":"sandycheeks@gmail.com","Password":"iwantotgohome"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 2:34:39 PM","url":"/login"},"service":"finance-budget"}
+=======
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 1:46:47 PM","url":"/login"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 1:48:32 PM","url":"/login"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 1:49:14 PM","url":"/login"},"service":"finance-budget"}
@@ -457,3 +481,4 @@
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 2:28:33 PM","url":"/login"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 2:34:41 PM","url":"/login"},"service":"finance-budget"}
 {"level":"info","message":{"body":{"Email":"w_jordan53@yahoo.com","Password":"password123!"},"level":"info","method":"POST","parameters":{"0":"/login"},"timestamp":"9/8/2023, 2:35:57 PM","url":"/login"},"service":"finance-budget"}
+>>>>>>> main

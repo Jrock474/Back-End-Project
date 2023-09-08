@@ -36,7 +36,7 @@ app.all('*', (req, res, next) => {
 })
 
 //Displays all Users in Database
-app.get('/users-all', async (req, res) => {
+app.get('/users', async (req, res) => {
   const allUsers = await Users.findAll()
 
   res.send(allUsers)
@@ -122,7 +122,7 @@ app.post('/sign-up', async (req, res) => {
         Password: hash,
         ReEnterPassword: hash
       });
-      res.send(newUser)
+      res.redirect('login')
     } catch (error) {
       console.error(error);
       return res.render('sign-up', { error: 'An error occurred during registration' });
@@ -189,9 +189,34 @@ app.delete('/user/email', async (req, res) => {
 app.post('/addExpense/:UserID', async (req, res) => {
   try {
     const { Description, Amount } = req.body;
-    const UserID = req.params.UserID
+    const UserID = req.params.UserID;
 
-    // Validate the request data (e.g., check for required fields)
+    // Validate the request data
+    if (!Description || !Amount) {
+      res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Both 'Description' and 'Amount' are required"
+      });
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(Description)) {
+      res.status(400).json({ error: "Description should only contain letters, numbers, and spaces" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should only contain letters, numbers, and spaces"
+      });
+    } else if (Description.length > 50) {
+      res.status(400).json({ error: "Description should be under 50 characters" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should be under 50 characters"
+      });
+    } else if (typeof Amount !== "number") {
+      res.status(400).json({ error: "'Amount' must be a number" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "'Amount' must be a number"
+      });
+    }
 
     // Create a new expense transaction record in the database
     const newExpense = await Expense_Transaction.create({
@@ -205,16 +230,17 @@ app.post('/addExpense/:UserID', async (req, res) => {
       where: { UserID },
     });
 
-    // Update the 'Income' column in the 'Users' table
-    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
-
     // Update the 'Expenses' column in the 'Users' table
     await Users.update({ Expenses: totalExpense }, { where: { id: UserID } });
 
-    // Update the 'Net' column in the 'Users' table
-    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
+    // Calculate the total income for the user (if needed)
+    // Replace 'totalIncome' with the actual calculation logic
 
-    // Retrieve all Expense transactions after adding the new one
+    // Update the 'Net' column in the 'Users' table
+    const totalIncome = await Users.sum('Income', { where: { id: UserID } });
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } });
+
+    // Retrieve all expense transactions after adding the new one
     const allExpense = await Expense_Transaction.findAll();
 
     // Return a success response with all Expense transactions
@@ -229,12 +255,38 @@ app.post('/addExpense/:UserID', async (req, res) => {
   }
 });
 
+
 app.post('/addIncome/:UserID', async (req, res) => {
   try {
     const { Description, Amount } = req.body;
     const UserID = req.params.UserID;
 
-    // Validate the request data (e.g., check for required fields)
+    // Validate the request dat else if (!Description || !Amount) {
+    if (!Description || !Amount) {
+      res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Both 'Description' and 'Amount' are required"
+      });
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(Description)) {
+      res.status(400).json({ error: "Description should only contain letters, numbers, and spaces" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should only contain letters, numbers, and spaces"
+      });
+    } else if (Description.length > 50) {
+      res.status(400).json({ error: "Description should be under 50 characters" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should be under 50 characters"
+      });
+    } else if (typeof Amount !== "number") {
+      res.status(400).json({ error: "'Amount' must be a number" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "'Amount' must be a number"
+      });
+    }
 
     // Create a new Income transaction record in the database
     const newIncome = await Income_Transaction.create({
@@ -273,6 +325,7 @@ app.post('/addIncome/:UserID', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 app.get('/userIncome/:UserID', async (req, res) => {
 
