@@ -206,7 +206,8 @@ app.put('/addExpense', async (req, res) => {
 
 app.put('/addIncome', async (req, res) => {
   try {
-    const { Description, Amount, UserID } = req.body;
+    const { Description, Amount } = req.body;
+    const UserID = req.params.UserID;
 
     // Validate the request data (e.g., check for required fields)
 
@@ -217,13 +218,45 @@ app.put('/addIncome', async (req, res) => {
       UserID,
     });
 
-    // Return a success response
-    res.status(201).json({ message: 'Income added successfully', data: newIncome });
+    // Calculate the total income for the user
+    const totalIncome = await Income_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Update the 'Income' column in the 'Users' table
+    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
+
+    // Retrieve all income transactions after adding the new one
+    const allIncome = await Income_Transaction.findAll();
+
+    // Return a success response with all income transactions
+    res.status(201).json({
+      message: 'Income added successfully',
+      data: newIncome,
+      allIncome, // Include all income transactions in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+
+
+app.get('/userIncome/:UserID', async(req, res) => {
+  
+  const userIncome = await Income_Transaction.findAll({where: {UserID: req.params.UserID }});
+    res.send(userIncome)
+
+})
+
+app.get('/userExpense/:UserID', async(req, res) => {
+  
+  const userExpense = await Expense_Transaction.findAll({where: {UserID: req.params.UserID }});
+    res.send(userExpense)
+
+})
 
 
 app.listen(port, () => {
