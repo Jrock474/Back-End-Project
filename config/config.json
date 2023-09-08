@@ -1,22 +1,22 @@
 {
   "development": {
-    "username": "urdxgrxc",
-    "password": "o3itKInenaf8I5u0m2gJMubFh8MVqtRF",
-    "database": "urdxgrxc",
+    "username": "ihxikvfb",
+    "password": "0c1Z2wVwsC1WYkeleA1JZl6colYHmTdd",
+    "database": "ihxikvfb",
     "host": "berry.db.elephantsql.com",
     "dialect": "postgres"
   },
   "test": {
-    "username": "urdxgrxc",
+    "username": "ihxikvfb",
     "password": null,
-    "database": "urdxgrxc",
+    "database": "ihxikvfb",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
-    "username": "urdxgrxc",
-    "password": "o3itKInenaf8I5u0m2gJMubFh8MVqtRF",
-    "database": "urdxgrxc",
+    "username": "ihxikvfb",
+    "password": "0c1Z2wVwsC1WYkeleA1JZl6colYHmTdd",
+    "database": "ihxikvfb",
     "host": "berry.db.elephantsql.com",
     "dialect": "postgres"
   }

@@ -36,7 +36,7 @@ app.all('*', (req, res, next) => {
 })
 
 //Displays all Users in Database
-app.get('/users-all', async (req, res) => {
+app.get('/users', async (req, res) => {
   const allUsers = await Users.findAll()
   res.send(allUsers)
 })
@@ -177,7 +177,7 @@ app.post('/addExpense/:UserID', async (req, res) => {
 app.post('/addIncome/:UserID', async (req, res) => {
   try {
     const { Description, Amount } = req.body;
-    UserID = req.params.UserID
+    const UserID = req.params.UserID;
 
     // Validate the request data (e.g., check for required fields)
 
@@ -187,6 +187,14 @@ app.post('/addIncome/:UserID', async (req, res) => {
       Amount,
       UserID,
     });
+
+    // Calculate the total income for the user
+    const totalIncome = await Income_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Update the 'Income' column in the 'Users' table
+    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
 
     // Retrieve all income transactions after adding the new one
     const allIncome = await Income_Transaction.findAll();
@@ -202,6 +210,8 @@ app.post('/addIncome/:UserID', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
 
 
 app.get('/userIncome/:UserID', async(req, res) => {
