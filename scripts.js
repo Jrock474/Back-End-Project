@@ -23,33 +23,33 @@ const logger = winston.createLogger({
 });
 
 //Winston logger
-app.all('*',(req,res, next)=>{
+app.all('*', (req, res, next) => {
   logger.info({
-      level: 'info',
-      method:req.method,
-      body:req.body,
-      url:req.url,
-      parameters:req.params,
-      timestamp:new Date().toLocaleString()
+    level: 'info',
+    method: req.method,
+    body: req.body,
+    url: req.url,
+    parameters: req.params,
+    timestamp: new Date().toLocaleString()
   })
   next()
 })
 
 //Displays all Users in Database
-app.get('/users-all',async(req,res)=>{
+app.get('/users-all', async (req, res) => {
   const allUsers = await Users.findAll()
 
   res.send(allUsers)
 })
 
 //Sign In Page
-app.get('/login',(req,res)=>{
+app.get('/login', (req, res) => {
   res.render('login', { errorMessage: '' })
 })
 
 //Home Page 
-app.get('/sign-up',(req,res)=>{
-    res.render('sign-up', { errorMessage: '' })
+app.get('/sign-up', (req, res) => {
+  res.render('sign-up', { errorMessage: '' })
 })
 
 //Dashboard
@@ -62,31 +62,31 @@ app.get('/dashboard', (req, res) => {
 //Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-  const specialCharacters = ["!","@","#","$","%","^","&","*","_"]
+  const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "_"]
   const letters = /^[a-zA-Z]/;
   const numbers = /^[0-9]/;
 
-  
-  if(Name === null || Email === null || Password === null || ReEnterPassword === null){
+
+  if (Name === null || Email === null || Password === null || ReEnterPassword === null) {
     return res.render('sign-up', { errorMessage: 'Fields can not be empty' });
   }
 
-  if (Name.length > 30){
+  if (Name.length > 30) {
     return res.render('sign-up', { errorMessage: 'Name can not be greater than 30 characters' });
   }
 
-  if (Name === specialCharacters){
+  if (Name === specialCharacters) {
     return res.render('sign-up', { errorMessage: 'Name can not contain special characters' });
   }
 
-  if (Password !== ReEnterPassword){
+  if (Password !== ReEnterPassword) {
     return res.render('sign-up', { errorMessage: 'Passwords must match' });
   }
 
-  if (Password.length < 8){
+  if (Password.length < 8) {
     return res.render('sign-up', { errorMessage: 'Passwords must be at least 8 characters' });
   }
-console.log(Password)
+  console.log(Password)
   // if (Password != specialCharacters || Password != letters || Password != numbers){
   //   console.log("Special Characters: ", specialCharacters)
   //   console.log("Numbers: ", numbers)
@@ -95,27 +95,24 @@ console.log(Password)
   // }
 
   const existingEmail = await Users.findOne({
-    where:{
-        Email:Email,
-    }})
-
-    if (existingEmail){
-      return res.render('sign-up', { errorMessage: 'Email is already in use' });
+    where: {
+      Email: Email,
     }
+  })
 
-    
-
-
-
-
- //Encrypts Password
-const saltRounds = 10;
-bcrypt.hash(Password, saltRounds, async(err, hash) => {
-  if (err) {
-    console.error(err);
-    return;
+  if (existingEmail) {
+    return res.render('sign-up', { errorMessage: 'Email is already in use' });
   }
-  console.log('Hashed password:', hash);
+
+
+  //Encrypts Password
+  const saltRounds = 10;
+  bcrypt.hash(Password, saltRounds, async (err, hash) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('Hashed password:', hash);
 
     // If successful, inserts Data into Database as a new User
     try {
@@ -179,12 +176,12 @@ app.post('/login', async (req, res) => {
 //Deletes User based off of provided Email
 app.delete('/user/email', async (req, res) => {
   await Users.destroy({
-      where: {
-          id: req.params.id
-      }
-    });
-    res.send('User has been deleted')
-    console.log(Users)
+    where: {
+      id: req.params.id
+    }
+  });
+  res.send('User has been deleted')
+  console.log(Users)
 
 })
 
@@ -275,11 +272,6 @@ app.post('/addIncome/:UserID', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-const updateFinances = () => {
-
-}
-
 
 app.get('/userIncome/:UserID', async (req, res) => {
 
