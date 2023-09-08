@@ -42,17 +42,17 @@ app.get('/users', async (req, res) => {
 })
 
 //Sign In Page
-app.get('/login',(req,res)=>{
+app.get('/login', (req, res) => {
   res.render('login', { invalidLogin: false })
 })
 
 //Home Page 
-app.get('/sign-up',(req,res)=>{
-    res.render('sign-up', { unmatchedPasswordError: false })
+app.get('/sign-up', (req, res) => {
+  res.render('sign-up', { unmatchedPasswordError: false })
 })
 
 //Dashboard
-app.get('/dashboard',(req,res)=>{
+app.get('/dashboard', (req, res) => {
   res.render('dashboard')
 })
 
@@ -61,8 +61,8 @@ app.get('/dashboard',(req,res)=>{
 //Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-  
-  if (Password !== ReEnterPassword){
+
+  if (Password !== ReEnterPassword) {
     return res.render('sign-up', { unmatchedPasswordError: 'Passwords must match' });
   }
 
@@ -75,22 +75,22 @@ app.post('/sign-up', async (req, res) => {
     }
     console.log('Hashed password:', hash);
 
-  // If successful, inserts Data into Database as a new User
-  try {
-    const newUser = await Users.create({
-       Name: Name,
-       Email: Email,
-       Password: hash,
-       ReEnterPassword: hash
-     });
-     res.send(newUser)
-   } catch (error) {
-       console.error(error);
-       return res.render('sign-up', { error: 'An error occurred during registration' });
-   }
-});
+    // If successful, inserts Data into Database as a new User
+    try {
+      const newUser = await Users.create({
+        Name: Name,
+        Email: Email,
+        Password: hash,
+        ReEnterPassword: hash
+      });
+      res.send(newUser)
+    } catch (error) {
+      console.error(error);
+      return res.render('sign-up', { error: 'An error occurred during registration' });
+    }
+  });
 
-// Logging and rendering 'register' view after successful registration or error handling
+  // Logging and rendering 'register' view after successful registration or error handling
   console.log({
     Name: Name,
     Email: Email,
@@ -100,14 +100,15 @@ app.post('/sign-up', async (req, res) => {
 })
 
 // Sign in for Returning Users
-app.post('/login', async(req, res) => {
+app.post('/login', async (req, res) => {
   const { Email, Password } = req.body;
   const userEnteredPassword = Password;
-  
+
   const returningUser = await Users.findOne({
-      where:{
-          Email:Email,
-  }})
+    where: {
+      Email: Email,
+    }
+  })
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
@@ -134,7 +135,7 @@ app.post('/login', async(req, res) => {
 // })
 
 //Deletes User based off of provided Email
-app.delete('/user/email',async(req,res)=>{
+app.delete('/user/email', async (req, res) => {
   await Users.destroy({
     where: {
       id: req.params.id
@@ -148,7 +149,7 @@ app.delete('/user/email',async(req,res)=>{
 app.post('/addExpense/:UserID', async (req, res) => {
   try {
     const { Description, Amount } = req.body;
-    UserID = req.params.UserID
+    const UserID = req.params.UserID
 
     // Validate the request data (e.g., check for required fields)
 
@@ -158,6 +159,20 @@ app.post('/addExpense/:UserID', async (req, res) => {
       Amount,
       UserID,
     });
+
+    // Calculate the total expense for the user
+    const totalExpense = await Expense_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Update the 'Income' column in the 'Users' table
+    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
+
+    // Update the 'Expenses' column in the 'Users' table
+    await Users.update({ Expenses: totalExpense }, { where: { id: UserID } });
+
+    // Update the 'Net' column in the 'Users' table
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
 
     // Retrieve all Expense transactions after adding the new one
     const allExpense = await Expense_Transaction.findAll();
@@ -193,8 +208,16 @@ app.post('/addIncome/:UserID', async (req, res) => {
       where: { UserID },
     });
 
+    // Calculate the total expense for the user
+    const totalExpense = await Expense_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
     // Update the 'Income' column in the 'Users' table
     await Users.update({ Income: totalIncome }, { where: { id: UserID } });
+
+    // Update the 'Net' column in the 'Users' table
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
 
     // Retrieve all income transactions after adding the new one
     const allIncome = await Income_Transaction.findAll();
@@ -214,17 +237,17 @@ app.post('/addIncome/:UserID', async (req, res) => {
 
 
 
-app.get('/userIncome/:UserID', async(req, res) => {
-  
-  const userIncome = await Income_Transaction.findAll({where: {UserID: req.params.UserID }});
-    res.send(userIncome)
+app.get('/userIncome/:UserID', async (req, res) => {
+
+  const userIncome = await Income_Transaction.findAll({ where: { UserID: req.params.UserID } });
+  res.send(userIncome)
 
 })
 
-app.get('/userExpense/:UserID', async(req, res) => {
-  
-  const userExpense = await Expense_Transaction.findAll({where: {UserID: req.params.UserID }});
-    res.send(userExpense)
+app.get('/userExpense/:UserID', async (req, res) => {
+
+  const userExpense = await Expense_Transaction.findAll({ where: { UserID: req.params.UserID } });
+  res.send(userExpense)
 
 })
 
