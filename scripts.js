@@ -17,7 +17,7 @@ const app = express();
 const sqlize = require('sequelize');
 const pg = require('pg');
 const winston = require('winston');
-const {Users, Expense_Transaction} = require('./models')
+const { Users, Expense_Transaction, Income_Transaction } = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
@@ -40,129 +40,145 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: 'combined.log' }),
   ],
 });
-app.all('*',(req,res, next)=>{
+
+//Winston logger
+app.all('*', (req, res, next) => {
   logger.info({
-      level: 'info',
-      method:req.method,
-      body:req.body,
-      url:req.url,
-      parameters:req.params,
-      timestamp:new Date().toLocaleString()
+    level: 'info',
+    method: req.method,
+    body: req.body,
+    url: req.url,
+    parameters: req.params,
+    timestamp: new Date().toLocaleString()
   })
   next()
 })
 
-app.get('/users-all',async(req,res)=>{
+//Displays all Users in Database
+app.get('/users', async (req, res) => {
   const allUsers = await Users.findAll()
+
   res.send(allUsers)
 })
 
-app.get('/',(req,res)=>{
-    res.render('sign-up')
-})
-app.get('/Finance', (req, res)=>{
-  res.send("Finance")
-})
-let pw = ""
-
-app.get('/users', async(req,res) => {
-  const allUsers = await Users.findAll();
-  res.send(allUsers)
-  console.log(`That's all folks!`)
+//Sign In Page
+app.get('/login', (req, res) => {
+  res.render('login', { errorMessage: '' })
 })
 
-app.get("/budget-home", async(req,res) => {
-  // const budget_home = await 
-  res.render ("budget-home")}
-)
+//Home Page 
+app.get('/sign-up', (req, res) => {
+  res.render('sign-up', { errorMessage: '' })
+})
+
+//Dashboard
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard', {userName: ''})
+})
 
 
+//Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-  
-  if (Password !== ReEnterPassword){
-    return res.render('sign-up', { error: 'Passwords must match' });
+  const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "_"]
+  const letters = /^[a-zA-Z]/;
+  const numbers = /^[0-9]/;
+
+
+  if (Name === null || Email === null || Password === null || ReEnterPassword === null) {
+    return res.render('sign-up', { errorMessage: 'Fields can not be empty' });
   }
 
-app.post('/authray', (req, res)=>{
-  const userEnteredPassword = 'mypassword';
-  const storedHashedPassword = '...';
-    
-  bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
-    if (err) {
-       console.error(err);
-       return;
+  if (Name.length > 30) {
+    return res.render('sign-up', { errorMessage: 'Name can not be greater than 30 characters' });
+  }
+
+  if (Name === specialCharacters) {
+    return res.render('sign-up', { errorMessage: 'Name can not contain special characters' });
+  }
+
+  if (Password !== ReEnterPassword) {
+    return res.render('sign-up', { errorMessage: 'Passwords must match' });
+  }
+
+  if (Password.length < 8) {
+    return res.render('sign-up', { errorMessage: 'Passwords must be at least 8 characters' });
+  }
+  console.log(Password)
+  // if (Password != specialCharacters || Password != letters || Password != numbers){
+  //   console.log("Special Characters: ", specialCharacters)
+  //   console.log("Numbers: ", numbers)
+  //   console.log("Letters: ", letters)
+  //   return res.render('sign-up', { errorMessage: 'Password must contain a letter,number, and a special character' });
+  // }
+
+  const existingEmail = await Users.findOne({
+    where: {
+      Email: Email,
     }
-    if (result) {
-      console.log('Passwords match!');
-    } else {
-      console.log('Passwords do not match.');
-  }});
   })
-  app.listen(port, ()=>{
-  console.log(`Server is running on port ${port}`)
-  })
-    
- //Encrypts Password
-const saltRounds = 10;
-bcrypt.hash(Password, saltRounds, async(err, hash) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log('Hashed password:', hash);
 
-  // If successful, inserts Data into Database as a new User
-  try {
-    const newUser = await Users.create({
-       Name: Name,
-       Email: Email,
-       Password: hash,
-       ReEnterPassword: hash
-     });
-     res.send(newUser)
-   } catch (error) {
-       console.error(error);
-       return res.render('sign-up', { error: 'An error occurred during registration' });
-   }
-    
-  
-});
-// Logging and rendering 'register' view after successful registration or error handling
+  if (existingEmail) {
+    return res.render('sign-up', { errorMessage: 'Email is already in use' });
+  }
+
+
+  //Encrypts Password
+  const saltRounds = 10;
+  bcrypt.hash(Password, saltRounds, async (err, hash) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('Hashed password:', hash);
+
+    // If successful, inserts Data into Database as a new User
+    try {
+      const newUser = await Users.create({
+        Name: Name,
+        Email: Email,
+        Password: hash,
+        ReEnterPassword: hash
+      });
+      res.redirect('login')
+    } catch (error) {
+      console.error(error);
+      return res.render('sign-up', { error: 'An error occurred during registration' });
+    }
+  });
+
+  // Logging and rendering 'register' view after successful registration or error handling
   console.log({
     Name: Name,
     Email: Email,
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
-  
 })
 
 // Sign in for Returning Users
-app.post('/sign-in', (req, res) => {
-    const Email = req.body.Email;
-    // const password = req.body.Password;
-    const returningUser = Users.findOne({
-        where:{
-            Email:Email, 
-    }})
-    if(!returningUser){
-        return res.status(400).send('invalid login');
+app.post('/login', async (req, res) => {
+  const { Email, Password } = req.body;
+  const userEnteredPassword = Password;
+
+  const returningUser = await Users.findOne({
+    where: {
+      Email: Email,
     }
-    res.render('dashbord')
-
-    bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      if (result) {
-        console.log('Passwords match!');
-      } else {
-        console.log('Passwords do not match.');
-      }
-    });
-
+  })
+  const userName = returningUser.Name;
+  const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
+  bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    if (result) {
+      res.render('dashboard', {userName});
+    } else {
+      res.render('login', { errorMessage: 'Invalid Login' });
+    }
+  });
 })
 
 // app.put('/finances/:id',async(req,res)=>{
@@ -176,22 +192,49 @@ app.post('/sign-in', (req, res) => {
 //   res.send(updatedFinance)
 // })
 
-app.delete('/user/email',async(req,res)=>{
+//Deletes User based off of provided Email
+app.delete('/user/email', async (req, res) => {
   await Users.destroy({
-      where: {
-          id: req.params.id
-      }
-    });
-    res.send('User has been deleted')
-    console.log(Users)
+    where: {
+      id: req.params.id
+    }
+  });
+  res.send('User has been deleted')
+  console.log(Users)
 
 })
 
-app.put('/addExpense', async (req, res) => {
+app.post('/addExpense/:UserID', async (req, res) => {
   try {
-    const { Description, Amount, UserID } = req.body;
+    const { Description, Amount } = req.body;
+    const UserID = req.params.UserID;
 
-    // Validate the request data (e.g., check for required fields)
+    // Validate the request data
+    if (!Description || !Amount) {
+      res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Both 'Description' and 'Amount' are required"
+      });
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(Description)) {
+      res.status(400).json({ error: "Description should only contain letters, numbers, and spaces" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should only contain letters, numbers, and spaces"
+      });
+    } else if (Description.length > 50) {
+      res.status(400).json({ error: "Description should be under 50 characters" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should be under 50 characters"
+      });
+    } else if (typeof Amount !== "number") {
+      res.status(400).json({ error: "'Amount' must be a number" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "'Amount' must be a number"
+      });
+    }
 
     // Create a new expense transaction record in the database
     const newExpense = await Expense_Transaction.create({
@@ -200,19 +243,68 @@ app.put('/addExpense', async (req, res) => {
       UserID,
     });
 
-    // Return a success response
-    res.status(201).json({ message: 'Expense added successfully', data: newExpense });
+    // Calculate the total expense for the user
+    const totalExpense = await Expense_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Update the 'Expenses' column in the 'Users' table
+    await Users.update({ Expenses: totalExpense }, { where: { id: UserID } });
+
+    // Calculate the total income for the user (if needed)
+    // Replace 'totalIncome' with the actual calculation logic
+
+    // Update the 'Net' column in the 'Users' table
+    const totalIncome = await Users.sum('Income', { where: { id: UserID } });
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } });
+
+    // Retrieve all expense transactions after adding the new one
+    const allExpense = await Expense_Transaction.findAll();
+
+    // Return a success response with all Expense transactions
+    res.status(201).json({
+      message: 'Expense added successfully',
+      data: newExpense,
+      allExpense, // Include all Expense transactions in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.put('/addIncome', async (req, res) => {
-  try {
-    const { Description, Amount, UserID } = req.body;
 
-    // Validate the request data (e.g., check for required fields)
+app.post('/addIncome/:UserID', async (req, res) => {
+  try {
+    const { Description, Amount } = req.body;
+    const UserID = req.params.UserID;
+
+    // Validate the request dat else if (!Description || !Amount) {
+    if (!Description || !Amount) {
+      res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Both 'Description' and 'Amount' are required"
+      });
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(Description)) {
+      res.status(400).json({ error: "Description should only contain letters, numbers, and spaces" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should only contain letters, numbers, and spaces"
+      });
+    } else if (Description.length > 50) {
+      res.status(400).json({ error: "Description should be under 50 characters" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "Description should be under 50 characters"
+      });
+    } else if (typeof Amount !== "number") {
+      res.status(400).json({ error: "'Amount' must be a number" });
+      logger.error({
+        timestamp: new Date().toLocaleString(),
+        message: "'Amount' must be a number"
+      });
+    }
 
     // Create a new Income transaction record in the database
     const newIncome = await Income_Transaction.create({
@@ -221,13 +313,51 @@ app.put('/addIncome', async (req, res) => {
       UserID,
     });
 
-    // Return a success response
-    res.status(201).json({ message: 'Income added successfully', data: newIncome });
+    // Calculate the total income for the user
+    const totalIncome = await Income_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Calculate the total expense for the user
+    const totalExpense = await Expense_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Update the 'Income' column in the 'Users' table
+    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
+
+    // Update the 'Net' column in the 'Users' table
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
+
+    // Retrieve all income transactions after adding the new one
+    const allIncome = await Income_Transaction.findAll();
+
+    // Return a success response with all income transactions
+    res.status(201).json({
+      message: 'Income added successfully',
+      data: newIncome,
+      allIncome, // Include all income transactions in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+app.get('/userIncome/:UserID', async (req, res) => {
+
+  const userIncome = await Income_Transaction.findAll({ where: { UserID: req.params.UserID } });
+  res.send(userIncome)
+
+})
+
+app.get('/userExpense/:UserID', async (req, res) => {
+
+  const userExpense = await Expense_Transaction.findAll({ where: { UserID: req.params.UserID } });
+  res.send(userExpense)
+
+})
 
 
 app.listen(port, () => {
