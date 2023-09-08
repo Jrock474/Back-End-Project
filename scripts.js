@@ -188,9 +188,20 @@ app.delete('/user/email', async (req, res) => {
 app.post('/addExpense/:UserID', async (req, res) => {
   try {
     const { Description, Amount } = req.body;
-    const UserID = req.params.UserID
+    const UserID = req.params.UserID;
 
-    // Validate the request data (e.g., check for required fields)
+    // Validate the request data
+    if (!Description || !Amount) {
+      return res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+    }
+
+    if (Description.length > 50) {
+      return res.status(400).json({ error: "Description should be under 50 characters" });
+    }
+
+    if (typeof Amount !== "number") {
+      return res.status(400).json({ error: "'Amount' must be a number" });
+    }
 
     // Create a new expense transaction record in the database
     const newExpense = await Expense_Transaction.create({
@@ -204,16 +215,17 @@ app.post('/addExpense/:UserID', async (req, res) => {
       where: { UserID },
     });
 
-    // Update the 'Income' column in the 'Users' table
-    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
-
     // Update the 'Expenses' column in the 'Users' table
     await Users.update({ Expenses: totalExpense }, { where: { id: UserID } });
 
-    // Update the 'Net' column in the 'Users' table
-    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
+    // Calculate the total income for the user (if needed)
+    // Replace 'totalIncome' with the actual calculation logic
 
-    // Retrieve all Expense transactions after adding the new one
+    // Update the 'Net' column in the 'Users' table
+    const totalIncome = await Users.sum('Income', { where: { id: UserID } });
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } });
+
+    // Retrieve all expense transactions after adding the new one
     const allExpense = await Expense_Transaction.findAll();
 
     // Return a success response with all Expense transactions
@@ -228,21 +240,24 @@ app.post('/addExpense/:UserID', async (req, res) => {
   }
 });
 
+
 app.post('/addIncome/:UserID', async (req, res) => {
-
-  if (Description.length > 50) {
-    res.status(400).json({ error: "Student grade must be between 1 and 100" });
-        logger.error({
-            timestamp: new Date().toLocaleString(),
-            message: "Student grade must be between 1 and 100"
-        });
-  }
-
   try {
     const { Description, Amount } = req.body;
     const UserID = req.params.UserID;
 
-    // Validate the request data (e.g., check for required fields)
+    // Validate the request data
+    if (!Description || !Amount) {
+      return res.status(400).json({ error: "Both 'Description' and 'Amount' are required" });
+    }
+
+    if (Description.length > 50) {
+      return res.status(400).json({ error: "Description should be under 50 characters" });
+    }
+
+    if (typeof Amount !== "number") {
+      return res.status(400).json({ error: "'Amount' must be a number" });
+    }
 
     // Create a new Income transaction record in the database
     const newIncome = await Income_Transaction.create({
@@ -281,6 +296,7 @@ app.post('/addIncome/:UserID', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 app.get('/userIncome/:UserID', async (req, res) => {
 
