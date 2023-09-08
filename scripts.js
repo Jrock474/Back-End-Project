@@ -85,10 +85,13 @@ app.post('/sign-up', async (req, res) => {
   if (Password.length < 8){
     return res.render('sign-up', { errorMessage: 'Passwords must be at least 8 characters' });
   }
-
-  if (Password !==specialCharacters || Password !== letters || Password !== numbers){
-    return res.render('sign-up', { errorMessage: 'Password must contain a letter,number, and a special character' });
-  }
+console.log(Password)
+  // if (Password != specialCharacters || Password != letters || Password != numbers){
+  //   console.log("Special Characters: ", specialCharacters)
+  //   console.log("Numbers: ", numbers)
+  //   console.log("Letters: ", letters)
+  //   return res.render('sign-up', { errorMessage: 'Password must contain a letter,number, and a special character' });
+  // }
 
   const existingEmail = await Users.findOne({
     where:{
