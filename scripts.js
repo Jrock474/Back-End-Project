@@ -229,6 +229,15 @@ app.post('/addExpense/:UserID', async (req, res) => {
 });
 
 app.post('/addIncome/:UserID', async (req, res) => {
+
+  if (Description.length > 50) {
+    res.status(400).json({ error: "Student grade must be between 1 and 100" });
+        logger.error({
+            timestamp: new Date().toLocaleString(),
+            message: "Student grade must be between 1 and 100"
+        });
+  }
+
   try {
     const { Description, Amount } = req.body;
     const UserID = req.params.UserID;
