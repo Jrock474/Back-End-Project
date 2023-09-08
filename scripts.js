@@ -157,7 +157,7 @@ app.post('/login', async (req, res) => {
     if (result) {
       res.redirect('/dashboard');
     } else {
-      res.render('login', { invalidLogin: 'Invalid Login' });
+      res.render('login', { errorMessage: 'Invalid Login' });
     }
   });
 })
