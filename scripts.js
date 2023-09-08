@@ -34,7 +34,7 @@ const logger = winston.createLogger({
 
 //Winston logger
 app.all('*', (req, res, next) => {
-  logger.info({
+  logger.log({
     level: 'info',
     method: req.method,
     body: req.body,
@@ -63,10 +63,12 @@ app.get('/sign-up', (req, res) => {
 })
 
 // Dashboard
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard/:userID', async(req, res) => {
   if (req.session.isAuthenticated) {
+    const foundUser = await Users.findOne({where:{id: req.params.userID}})
+    let userName = foundUser.dataValues.Name
     // User is authenticated, proceed to the dashboard
-    res.render('dashboard');
+    res.render('dashboard', {userName});
   } else {
     // User is not authenticated, redirect to the login page
     res.redirect('/login');
@@ -150,7 +152,7 @@ app.post('/sign-up', async (req, res) => {
       req.session.userID = newUser.id; // Store the user's ID in the session
   
       // Redirect to the dashboard or another protected route
-      res.redirect('/dashboard');
+      res.redirect(`/dashboard/${newUser.id}`);
     } catch (error) {
       console.error(error);
       return res.render('sign-up', { error: 'An error occurred during registration' });
@@ -164,6 +166,11 @@ app.post('/sign-up', async (req, res) => {
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
+  logger.log({
+    level: 'info',
+    message: `Password: ${Password}`,
+    timestamp: new Date().toLocaleString()
+});
 })
 
 // Sign in for Returning Users
@@ -177,6 +184,7 @@ app.post('/login', async (req, res) => {
     }
   })
   const userName = returningUser.Name;
+  const userID = returningUser.id;
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
@@ -184,7 +192,8 @@ app.post('/login', async (req, res) => {
       return;
     }
     if (result) {
-      res.render('dashboard', {userName});
+      // res.render('dashboard', {userName});
+      res.redirect(`/dashboard/${userID}`);
     } else {
       res.render('login', { errorMessage: 'Invalid Login' });
     }
@@ -280,6 +289,10 @@ app.post('/addExpense/:UserID', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
+    logger.error({
+      timestamp: new Date().toLocaleString(),
+      message: "Internal server error"
+    });
   }
 });
 
