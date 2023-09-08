@@ -6,7 +6,8 @@ const winston = require('winston');
 const { Users, Expense_Transaction, Income_Transaction } = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { name } = require("ejs");
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -43,12 +44,12 @@ app.get('/users-all', async (req, res) => {
 
 //Sign In Page
 app.get('/login',(req,res)=>{
-  res.render('login', { invalidLogin: false })
+  res.render('login', { errorMessage: '' })
 })
 
-//Home Page 
+//Home Page and Sign Up
 app.get('/sign-up',(req,res)=>{
-    res.render('sign-up', { unmatchedPasswordError: false })
+    res.render('sign-up', { errorMessage: '' })
 })
 
 //Dashboard
@@ -61,10 +62,34 @@ app.get('/dashboard',(req,res)=>{
 //Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
+  let errorMessage = '';
   
-  if (Password !== ReEnterPassword){
-    return res.render('sign-up', { unmatchedPasswordError: 'Passwords must match' });
+  if(Name === "" || Email === "" || Password === "" || ReEnterPassword === ""){
+    return res.render('sign-up', { errorMessage: 'Fields can not be empty' });
+  }else if (Password !== ReEnterPassword){
+    return res.render('sign-up', { errorMessage: 'Passwords do not match' });
+  } 
+  
+  if (Password.length < 8){
+    return res.render('sign-up', { errorMessage: 'Password must be atleast 8 characters' });
+    
   }
+
+  if (Name.length > 30){
+    return res.render('sign-up', { errorMessage: 'Name must not exceed 30 characters' });
+  }
+
+  const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})+)(\/[^\s]*)?$/;
+
+  if (Name == urlPattern){
+    return res.render('sign-up', { errorMessage: 'Invalid Name' });
+  }
+
+  
+
+ 
+
+  
 
   //Encrypts Password
   const saltRounds = 10;
@@ -103,7 +128,7 @@ app.post('/sign-up', async (req, res) => {
 app.post('/login', async(req, res) => {
   const { Email, Password } = req.body;
   const userEnteredPassword = Password;
-  
+  console.log('23', Password);
   //Finds and compares provided email and password to the Database
   const returningUser = await Users.findOne({
       where:{
@@ -115,12 +140,13 @@ app.post('/login', async(req, res) => {
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
       console.error(err);
-      return;
+      return res.status(500).send('Internal Server Error');;
     }
+    console.log('24', result, userEnteredPassword, storedHashedPassword)
     if (result) {
-      res.redirect('/dashboard');
+      return res.redirect('/dashboard');
     } else {
-      res.render('login', { invalidLogin: 'Invalid Login' });
+      return res.render('login', { errorMessage: 'Invalid Login' });
     }
   });
 })
