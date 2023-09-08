@@ -3,7 +3,7 @@ const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
 const winston = require('winston');
-const {Users, Expense_Transaction} = require('./models')
+const { Users, Expense_Transaction, Income_Transaction } = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
@@ -23,36 +23,37 @@ const logger = winston.createLogger({
 });
 
 //Winston logger
-app.all('*',(req,res, next)=>{
+app.all('*', (req, res, next) => {
   logger.info({
-      level: 'info',
-      method:req.method,
-      body:req.body,
-      url:req.url,
-      parameters:req.params,
-      timestamp:new Date().toLocaleString()
+    level: 'info',
+    method: req.method,
+    body: req.body,
+    url: req.url,
+    parameters: req.params,
+    timestamp: new Date().toLocaleString()
   })
   next()
 })
 
 //Displays all Users in Database
-app.get('/users-all',async(req,res)=>{
+app.get('/users-all', async (req, res) => {
   const allUsers = await Users.findAll()
+
   res.send(allUsers)
 })
 
 //Sign In Page
-app.get('/login',(req,res)=>{
+app.get('/login', (req, res) => {
   res.render('login', { errorMessage: '' })
 })
 
 //Home Page 
-app.get('/sign-up',(req,res)=>{
-    res.render('sign-up', { errorMessage: '' })
+app.get('/sign-up', (req, res) => {
+  res.render('sign-up', { errorMessage: '' })
 })
 
 //Dashboard
-app.get('/dashboard',(req,res)=>{
+app.get('/dashboard', (req, res) => {
   res.render('dashboard')
 })
 
@@ -61,31 +62,31 @@ app.get('/dashboard',(req,res)=>{
 //Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-  const specialCharacters = ["!","@","#","$","%","^","&","*","_"]
+  const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "_"]
   const letters = /^[a-zA-Z]/;
   const numbers = /^[0-9]/;
 
-  
-  if(Name === null || Email === null || Password === null || ReEnterPassword === null){
+
+  if (Name === null || Email === null || Password === null || ReEnterPassword === null) {
     return res.render('sign-up', { errorMessage: 'Fields can not be empty' });
   }
 
-  if (Name.length > 30){
+  if (Name.length > 30) {
     return res.render('sign-up', { errorMessage: 'Name can not be greater than 30 characters' });
   }
 
-  if (Name === specialCharacters){
+  if (Name === specialCharacters) {
     return res.render('sign-up', { errorMessage: 'Name can not contain special characters' });
   }
 
-  if (Password !== ReEnterPassword){
+  if (Password !== ReEnterPassword) {
     return res.render('sign-up', { errorMessage: 'Passwords must match' });
   }
 
-  if (Password.length < 8){
+  if (Password.length < 8) {
     return res.render('sign-up', { errorMessage: 'Passwords must be at least 8 characters' });
   }
-console.log(Password)
+  console.log(Password)
   // if (Password != specialCharacters || Password != letters || Password != numbers){
   //   console.log("Special Characters: ", specialCharacters)
   //   console.log("Numbers: ", numbers)
@@ -94,44 +95,41 @@ console.log(Password)
   // }
 
   const existingEmail = await Users.findOne({
-    where:{
-        Email:Email,
-    }})
-
-    if (existingEmail){
-      return res.render('sign-up', { errorMessage: 'Email is already in use' });
+    where: {
+      Email: Email,
     }
+  })
 
-    
-
-
-
-
- //Encrypts Password
-const saltRounds = 10;
-bcrypt.hash(Password, saltRounds, async(err, hash) => {
-  if (err) {
-    console.error(err);
-    return;
+  if (existingEmail) {
+    return res.render('sign-up', { errorMessage: 'Email is already in use' });
   }
-  console.log('Hashed password:', hash);
 
-  // If successful, inserts Data into Database as a new User
-  try {
-    const newUser = await Users.create({
-       Name: Name,
-       Email: Email,
-       Password: hash,
-       ReEnterPassword: hash
-     });
-     res.send(newUser)
-   } catch (error) {
-       console.error(error);
-       return res.render('sign-up', { error: 'An error occurred during registration' });
-   }
-});
 
-// Logging and rendering 'register' view after successful registration or error handling
+  //Encrypts Password
+  const saltRounds = 10;
+  bcrypt.hash(Password, saltRounds, async (err, hash) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('Hashed password:', hash);
+
+    // If successful, inserts Data into Database as a new User
+    try {
+      const newUser = await Users.create({
+        Name: Name,
+        Email: Email,
+        Password: hash,
+        ReEnterPassword: hash
+      });
+      res.send(newUser)
+    } catch (error) {
+      console.error(error);
+      return res.render('sign-up', { error: 'An error occurred during registration' });
+    }
+  });
+
+  // Logging and rendering 'register' view after successful registration or error handling
   console.log({
     Name: Name,
     Email: Email,
@@ -141,14 +139,15 @@ bcrypt.hash(Password, saltRounds, async(err, hash) => {
 })
 
 // Sign in for Returning Users
-app.post('/login', async(req, res) => {
+app.post('/login', async (req, res) => {
   const { Email, Password } = req.body;
   const userEnteredPassword = Password;
-  
+
   const returningUser = await Users.findOne({
-      where:{
-          Email:Email,
-  }})
+    where: {
+      Email: Email,
+    }
+  })
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
@@ -175,20 +174,21 @@ app.post('/login', async(req, res) => {
 // })
 
 //Deletes User based off of provided Email
-app.delete('/user/email',async(req,res)=>{
+app.delete('/user/email', async (req, res) => {
   await Users.destroy({
-      where: {
-          id: req.params.id
-      }
-    });
-    res.send('User has been deleted')
-    console.log(Users)
+    where: {
+      id: req.params.id
+    }
+  });
+  res.send('User has been deleted')
+  console.log(Users)
 
 })
 
-app.put('/addExpense', async (req, res) => {
+app.post('/addExpense/:UserID', async (req, res) => {
   try {
-    const { Description, Amount, UserID } = req.body;
+    const { Description, Amount } = req.body;
+    const UserID = req.params.UserID
 
     // Validate the request data (e.g., check for required fields)
 
@@ -199,15 +199,36 @@ app.put('/addExpense', async (req, res) => {
       UserID,
     });
 
-    // Return a success response
-    res.status(201).json({ message: 'Expense added successfully', data: newExpense });
+    // Calculate the total expense for the user
+    const totalExpense = await Expense_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
+    // Update the 'Income' column in the 'Users' table
+    await Users.update({ Income: totalIncome }, { where: { id: UserID } });
+
+    // Update the 'Expenses' column in the 'Users' table
+    await Users.update({ Expenses: totalExpense }, { where: { id: UserID } });
+
+    // Update the 'Net' column in the 'Users' table
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
+
+    // Retrieve all Expense transactions after adding the new one
+    const allExpense = await Expense_Transaction.findAll();
+
+    // Return a success response with all Expense transactions
+    res.status(201).json({
+      message: 'Expense added successfully',
+      data: newExpense,
+      allExpense, // Include all Expense transactions in the response
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.put('/addIncome', async (req, res) => {
+app.post('/addIncome/:UserID', async (req, res) => {
   try {
     const { Description, Amount } = req.body;
     const UserID = req.params.UserID;
@@ -226,8 +247,16 @@ app.put('/addIncome', async (req, res) => {
       where: { UserID },
     });
 
+    // Calculate the total expense for the user
+    const totalExpense = await Expense_Transaction.sum('Amount', {
+      where: { UserID },
+    });
+
     // Update the 'Income' column in the 'Users' table
     await Users.update({ Income: totalIncome }, { where: { id: UserID } });
+
+    // Update the 'Net' column in the 'Users' table
+    await Users.update({ Net: (totalIncome - totalExpense) }, { where: { id: UserID } })
 
     // Retrieve all income transactions after adding the new one
     const allIncome = await Income_Transaction.findAll();
@@ -244,20 +273,17 @@ app.put('/addIncome', async (req, res) => {
   }
 });
 
+app.get('/userIncome/:UserID', async (req, res) => {
 
-
-
-app.get('/userIncome/:UserID', async(req, res) => {
-  
-  const userIncome = await Income_Transaction.findAll({where: {UserID: req.params.UserID }});
-    res.send(userIncome)
+  const userIncome = await Income_Transaction.findAll({ where: { UserID: req.params.UserID } });
+  res.send(userIncome)
 
 })
 
-app.get('/userExpense/:UserID', async(req, res) => {
-  
-  const userExpense = await Expense_Transaction.findAll({where: {UserID: req.params.UserID }});
-    res.send(userExpense)
+app.get('/userExpense/:UserID', async (req, res) => {
+
+  const userExpense = await Expense_Transaction.findAll({ where: { UserID: req.params.UserID } });
+  res.send(userExpense)
 
 })
 
