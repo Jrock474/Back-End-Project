@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require('express-session');
 const sqlize = require('sequelize');
 const app = express();
 const pg = require('pg');
@@ -11,6 +12,15 @@ app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(session({
+  secret: 'digitalCrafts',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false, // Set to true in production if using HTTPS
+    maxAge: 3600000, // Session expiration time in milliseconds (e.g., 1 hour)
+  },
+}));
 
 const logger = winston.createLogger({
   level: 'info',
@@ -52,12 +62,24 @@ app.get('/sign-up', (req, res) => {
   res.render('sign-up', { errorMessage: '' })
 })
 
-//Dashboard
+// Dashboard
 app.get('/dashboard', (req, res) => {
-  res.render('dashboard', {userName: ''})
-})
+  if (req.session.isAuthenticated) {
+    // User is authenticated, proceed to the dashboard
+    res.render('dashboard');
+  } else {
+    // User is not authenticated, redirect to the login page
+    res.redirect('/login');
+  }
+});
 
-
+// Logout route
+app.get('/logout', (req, res) => {
+  // Destroy the session and redirect to the login page
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
+});
 
 //Registration 
 app.post('/sign-up', async (req, res) => {
@@ -122,7 +144,13 @@ app.post('/sign-up', async (req, res) => {
         Password: hash,
         ReEnterPassword: hash
       });
-      res.redirect('login')
+      
+      // If successful registration, set session data
+      req.session.isAuthenticated = true;
+      req.session.userID = newUser.id; // Store the user's ID in the session
+  
+      // Redirect to the dashboard or another protected route
+      res.redirect('/dashboard');
     } catch (error) {
       console.error(error);
       return res.render('sign-up', { error: 'An error occurred during registration' });
