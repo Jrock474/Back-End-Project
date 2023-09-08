@@ -6,11 +6,12 @@ body {
 }
 
 header {
-    background-color: #e7ebd4;
-    background-image: url("dreamstimemaximum_94730830.jpg");
-    color: white;
-    text-align: center;
+    background-color: #425e6a;
+    background-image: ("./Public/images/Money_pen.jpg");
+    color: #dcdcbb;
+    text-align: ceter;
     padding: 20px 0;
+    
 }
 
 main {
@@ -40,4 +41,17 @@ main {
     padding: 10px;
     border: 1px solid #965649;
     border-radius: 3px;
+}
+#update-chart {
+    background-color: #fa6e06;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+.chart {
+    text-align: center;
+}
+#pie-chart {
+    max-width: 100%;
 }

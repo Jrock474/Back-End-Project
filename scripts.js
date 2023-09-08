@@ -1,5 +1,5 @@
 var createError = require('http-errors');
-var express = require('express');
+const express = require('express');
 var BodyParser = require('body-parser');
 // var logger = require('morgan');
 var path = require('path');
@@ -60,7 +60,10 @@ app.get('/users-all',async(req,res)=>{
 app.get('/',(req,res)=>{
     res.render('sign-up')
 })
-
+app.get('/Finance', (req, res)=>{
+  res.send("Finance")
+})
+let pw = ""
 
 app.get('/users', async(req,res) => {
   const allUsers = await Users.findAll();
@@ -81,6 +84,25 @@ app.post('/sign-up', async (req, res) => {
     return res.render('sign-up', { error: 'Passwords must match' });
   }
 
+app.post('/authray', (req, res)=>{
+  const userEnteredPassword = 'mypassword';
+  const storedHashedPassword = '...';
+    
+  bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
+    if (err) {
+       console.error(err);
+       return;
+    }
+    if (result) {
+      console.log('Passwords match!');
+    } else {
+      console.log('Passwords do not match.');
+  }});
+  })
+  app.listen(port, ()=>{
+  console.log(`Server is running on port ${port}`)
+  })
+    
  //Encrypts Password
 const saltRounds = 10;
 bcrypt.hash(Password, saltRounds, async(err, hash) => {
