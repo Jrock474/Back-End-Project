@@ -20,7 +20,8 @@ const winston = require('winston');
 const { Users, Expense_Transaction, Income_Transaction } = require('./models')
 const port = 3000
 const bodyParser = require('body-parser')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { isNumber } = require('util');
 app.set('view engine', 'ejs');
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}));
@@ -80,21 +81,17 @@ app.get('/dashboard', (req, res) => {
 //Registration 
 app.post('/sign-up', async (req, res) => {
   const { Name, Email, Password, ReEnterPassword } = req.body;
-  const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "_"]
+  const specialCharacters = /[-._!"`'#%&,:;<>=@{}~\$\(\)\*\+\/\\\?\[\]\^\|]+/;
   const letters = /^[a-zA-Z]/;
   const numbers = /^[0-9]/;
 
 
   if (Name === null || Email === null || Password === null || ReEnterPassword === null) {
-    return res.render('sign-up', { errorMessage: 'Fields can not be empty' });
+    return res.render('sign-up', { errorMessage: 'Fields can not be null' });
   }
 
-  if (Name.length > 30) {
-    return res.render('sign-up', { errorMessage: 'Name can not be greater than 30 characters' });
-  }
-
-  if (Name === specialCharacters) {
-    return res.render('sign-up', { errorMessage: 'Name can not contain special characters' });
+  if (Name.length > 15) {
+    return res.render('sign-up', { errorMessage: 'Name can not be greater than 15 characters' });
   }
 
   if (Password !== ReEnterPassword) {
@@ -104,12 +101,12 @@ app.post('/sign-up', async (req, res) => {
   if (Password.length < 8) {
     return res.render('sign-up', { errorMessage: 'Passwords must be at least 8 characters' });
   }
-  console.log(Password)
-  // if (Password != specialCharacters || Password != letters || Password != numbers){
+  
+  // if (Password != /[-._!"`'#%&,:;<>=@{}~\$\(\)\*\+\/\\\?\[\]\^\|]+/ || Password != /^[a-zA-Z]/ || Password != /^[0-9]/){
   //   console.log("Special Characters: ", specialCharacters)
   //   console.log("Numbers: ", numbers)
   //   console.log("Letters: ", letters)
-  //   return res.render('sign-up', { errorMessage: 'Password must contain a letter,number, and a special character' });
+  //   return res.render('sign-up', { errorMessage: 'Password must contain a letter, number, and a special character' });
   // }
 
   const existingEmail = await Users.findOne({
@@ -134,13 +131,13 @@ app.post('/sign-up', async (req, res) => {
 
     // If successful, inserts Data into Database as a new User
     try {
-      const newUser = await Users.create({
+      await Users.create({
         Name: Name,
         Email: Email,
         Password: hash,
         ReEnterPassword: hash
       });
-      res.redirect('login')
+      res.redirect('dashboard')
     } catch (error) {
       console.error(error);
       return res.render('sign-up', { error: 'An error occurred during registration' });
@@ -193,15 +190,29 @@ app.post('/login', async (req, res) => {
 // })
 
 //Deletes User based off of provided Email
-app.delete('/user/email', async (req, res) => {
-  await Users.destroy({
+app.delete('/deleteaccount', async (req, res) => {
+  const { Email, Password } = req.body;
+  const userEnteredPassword = Password;
+  const existingUser = await Users.findOne({
     where: {
-      id: req.params.id
+      Email: Email,
+    }
+  })
+  console.log(existingUser)
+  const storedHashedPassword = existingUser.Password; // this is the password that is stored in the database
+  bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    if (result) {
+       existingUser.destroy()
+      return res.redirect('sign-up')
+
+    } else {
+      return res.render('deleteaccount', { errorMessage: 'Account not found' });
     }
   });
-  res.send('User has been deleted')
-  console.log(Users)
-
 })
 
 app.post('/addExpense/:UserID', async (req, res) => {
