@@ -3,9 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <div class= “header-image”></div>
+    <title>Finance Budget</title>
+    <link rel="stylesheet" href="/dashboard.css">
     <title>Document</title>
 </head>
 <body>
     <h1>Welcome Back <%= userName %>! </h1>
+    <header>
+        <h1>Finance Budget</h1>
+    </header>
+</div>
+
+
+<div class="w3-container">
+    <a href="/login"><p>link to login </p></a>
+
+    <a href="/sign-up"><p>link to sign-up </p></a>
+</div>
+    <main>
+
+    <section class="budget-form">
+        <h2>Enter Your Data</h2>
+        <div class="input-group">
+            <label for="income">Income:</label>
+            <input type="number" id="income" placeholder="Please enter your income">
+        </div>
+        <div class="input-group">
+            <label for="expenses">Expenses:</label>
+            <input type="number" id="expenses" placeholder="Please enter your expenses">
+        
+        </div>
+        <img src="/images/Money_tree_growth.jpg" alt="Moneytree" style="width:100%"
+        img {opacity: 0.5;
+        }>
+        <div>
+
+    
+        <button id="update-chart">Update Chart</button>
+        </section>
+        <section class="chart">
+            <canvas id="pie-chart"></canvas>
+        </section>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>

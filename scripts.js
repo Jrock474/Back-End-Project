@@ -9,9 +9,6 @@ var path = require('path');
 
 const app = express();
 
-
-
-
 // app.use(logger('dev'));
 
 const sqlize = require('sequelize');
@@ -355,22 +352,15 @@ app.post('/addIncome/:UserID', async (req, res) => {
   }
 });
 
-
 app.get('/userIncome/:UserID', async (req, res) => {
-
   const userIncome = await Income_Transaction.findAll({ where: { UserID: req.params.UserID } });
   res.send(userIncome)
-
 })
 
 app.get('/userExpense/:UserID', async (req, res) => {
-
   const userExpense = await Expense_Transaction.findAll({ where: { UserID: req.params.UserID } });
   res.send(userExpense)
-
 })
-
-
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })
