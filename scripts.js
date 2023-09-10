@@ -10,6 +10,7 @@ var path = require('path');
 const app = express();
 
 // app.use(logger('dev'));
+const session = require('express-session');
 
 const sqlize = require('sequelize');
 const pg = require('pg');
@@ -24,6 +25,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(session({
+  secret: 'digitalCrafts',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false, // Set to true in production if using HTTPS
+    maxAge: 3600000, // Session expiration time in milliseconds (e.g., 1 hour)
+  },
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', indexRouter);
@@ -41,7 +51,7 @@ const logger = winston.createLogger({
 
 //Winston logger
 app.all('*', (req, res, next) => {
-  logger.info({
+  logger.log({
     level: 'info',
     method: req.method,
     body: req.body,
@@ -69,11 +79,26 @@ app.get('/sign-up', (req, res) => {
   res.render('sign-up', { errorMessage: '' })
 })
 
-//Dashboard
-app.get('/dashboard', (req, res) => {
-  res.render('dashboard', {userName: ''})
-})
+// Dashboard
+app.get('/dashboard/:userID', async(req, res) => {
+  if (req.session.isAuthenticated) {
+    const foundUser = await Users.findOne({where:{id: req.params.userID}})
+    let userName = foundUser.dataValues.Name
+    // User is authenticated, proceed to the dashboard
+    res.render('dashboard', {userName});
+  } else {
+    // User is not authenticated, redirect to the login page
+    res.redirect('/login');
+  }
+});
 
+// Logout route
+app.get('/logout', (req, res) => {
+  // Destroy the session and redirect to the login page
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
+});
 
 //Registration 
 app.post('/sign-up', async (req, res) => {
@@ -128,16 +153,22 @@ app.post('/sign-up', async (req, res) => {
 
     // If successful, inserts Data into Database as a new User
     try {
-      await Users.create({
+      const newUser = await Users.create({
         Name: Name,
         Email: Email,
         Password: hash,
         ReEnterPassword: hash
       });
-      res.redirect('dashboard')
+      
+      // If successful registration, set session data
+      req.session.isAuthenticated = true;
+      req.session.userID = newUser.id; // Store the user's ID in the session
+  
+      // Redirect to the dashboard or another protected route
+      res.redirect(`/dashboard/${newUser.id}`);
     } catch (error) {
       console.error(error);
-      return res.render('sign-up', { error: 'An error occurred during registration' });
+      return res.render('sign-up', { errorMessage: 'An error occurred during registration' });
     }
   });
 
@@ -148,6 +179,11 @@ app.post('/sign-up', async (req, res) => {
     Password: Password,
     ReEnterPassword: ReEnterPassword,
   });
+  logger.log({
+    level: 'info',
+    message: `Password: ${Password}`,
+    timestamp: new Date().toLocaleString()
+});
 })
 
 // Sign in for Returning Users
@@ -161,6 +197,7 @@ app.post('/login', async (req, res) => {
     }
   })
   const userName = returningUser.Name;
+  const userID = returningUser.id;
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
   bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
     if (err) {
@@ -168,7 +205,8 @@ app.post('/login', async (req, res) => {
       return;
     }
     if (result) {
-      res.render('dashboard', {userName});
+      // res.render('dashboard', {userName});
+      res.redirect(`/dashboard/${userID}`);
     } else {
       res.render('login', { errorMessage: 'Invalid Login' });
     }
@@ -278,6 +316,10 @@ app.post('/addExpense/:UserID', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
+    logger.error({
+      timestamp: new Date().toLocaleString(),
+      message: "Internal server error"
+    });
   }
 });
 
