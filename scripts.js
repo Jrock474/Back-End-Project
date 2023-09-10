@@ -153,7 +153,7 @@ app.post('/sign-up', async (req, res) => {
 
     // If successful, inserts Data into Database as a new User
     try {
-      await Users.create({
+      const newUser = await Users.create({
         Name: Name,
         Email: Email,
         Password: hash,
@@ -168,7 +168,7 @@ app.post('/sign-up', async (req, res) => {
       res.redirect(`/dashboard/${newUser.id}`);
     } catch (error) {
       console.error(error);
-      return res.render('sign-up', { error: 'An error occurred during registration' });
+      return res.render('sign-up', { errorMessage: 'An error occurred during registration' });
     }
   });
 
