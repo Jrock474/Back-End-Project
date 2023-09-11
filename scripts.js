@@ -69,28 +69,44 @@ app.get('/users', async (req, res) => {
   res.send(allUsers)
 })
 
-//Sign In Page
+//Sign In/Home Page 
 app.get('/login', (req, res) => {
   res.render('login', { errorMessage: '' })
 })
 
-//Home Page 
+app.get('/', (req, res) => {
+  res.render('login', { errorMessage: '' })
+})
+
+//Sign up 
 app.get('/sign-up', (req, res) => {
   res.render('sign-up', { errorMessage: '' })
 })
 
 // Dashboard
-app.get('/dashboard/:userID', async(req, res) => {
-  if (req.session.isAuthenticated) {
-    const foundUser = await Users.findOne({where:{id: req.params.userID}})
-    let userName = foundUser.dataValues.Name
-    // User is authenticated, proceed to the dashboard
-    res.render('dashboard', {userName});
-  } else {
-    // User is not authenticated, redirect to the login page
-    res.redirect('/login');
+app.get('/dashboard/:userID', async (req, res) => {
+  try {
+    if (req.session.isAuthenticated) {
+      const foundUser = await Users.findOne({ where: { id: req.params.userID } });
+      if (!foundUser) {
+        return res.status(404).send('User not found'); // Handle the case when the user is not found
+      }
+      let userName = foundUser.dataValues.Name;
+      let userExpenses = foundUser.dataValues.Expenses
+      let userIncome = foundUser.dataValues.Income
+      let userNet = foundUser.dataValues.Net
+      // User is authenticated, proceed to the dashboard
+      res.render('dashboard', { userName, userExpenses, userIncome, userNet });
+    } else {
+      // User is not authenticated, redirect to the login page
+      res.redirect('/login');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error'); // Handle other unexpected errors
   }
 });
+
 
 // Logout route
 app.get('/logout', (req, res) => {
@@ -194,24 +210,38 @@ app.post('/login', async (req, res) => {
   const returningUser = await Users.findOne({
     where: {
       Email: Email,
-    }
-  })
+    },
+  });
+
+  if (!returningUser) {
+    return res.render('login', { errorMessage: 'User not found' });
+  }
+
   const userName = returningUser.Name;
   const userID = returningUser.id;
   const storedHashedPassword = returningUser.Password; // this is the password that is stored in the database
-  bcrypt.compare(userEnteredPassword, storedHashedPassword, (err, result) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
+
+  try {
+    const result = await bcrypt.compare(userEnteredPassword, storedHashedPassword);
+
     if (result) {
-      // res.render('dashboard', {userName});
+      // Passwords match, redirect to the dashboard
+      req.session.isAuthenticated = true;
+      req.session.userID = userID; // Store the user's ID in the session
       res.redirect(`/dashboard/${userID}`);
     } else {
+      // Passwords do not match, render the login page with an error message
       res.render('login', { errorMessage: 'Invalid Login' });
     }
-  });
-})
+  } catch (error) {
+    console.error(error);
+    // Handle any errors that may occur during password comparison
+    res.status(500).send('Internal server error');
+  }
+});
+
+
+
 
 // app.put('/finances/:id',async(req,res)=>{
 //   const updateFinance = await finance.update({ income: req.body.income, expenses: req.body.expenses, savings: req.body.savings, surplus_deficit: req.body.surplus_deficit  },
