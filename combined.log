@@ -747,3 +747,23 @@
 {"level":"info","message":"Password: llllllll","service":"finance-budget","timestamp":"9/10/2023, 11:26:48 AM"}
 {"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/33"},"service":"finance-budget","timestamp":"9/10/2023, 11:26:48 AM","url":"/dashboard/33"}
 {"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/script.js"},"service":"finance-budget","timestamp":"9/10/2023, 11:26:49 AM","url":"/dashboard/script.js"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 4:41:16 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 4:41:20 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"9/10/2023, 4:42:25 PM","url":"/sign-up"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"9/10/2023, 4:42:27 PM","url":"/sign-up"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"9/10/2023, 4:42:29 PM","url":"/sign-up"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/10/2023, 4:42:33 PM","url":"/login"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/10/2023, 4:42:34 PM","url":"/login"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 4:42:36 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:03 PM","url":"/sign-up"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:05 PM","url":"/login"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:09 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:11 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/user"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:20 PM","url":"/user"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/users"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:27 PM","url":"/users"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/users-all"},"service":"finance-budget","timestamp":"9/10/2023, 4:57:58 PM","url":"/users-all"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/"},"service":"finance-budget","timestamp":"9/10/2023, 4:58:05 PM","url":"/"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/"},"service":"finance-budget","timestamp":"9/10/2023, 5:27:42 PM","url":"/"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 5:36:46 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard"},"service":"finance-budget","timestamp":"9/10/2023, 9:56:05 PM","url":"/dashboard"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"9/10/2023, 9:56:09 PM","url":"/sign-up"}
