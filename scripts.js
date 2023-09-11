@@ -22,7 +22,7 @@ const bcrypt = require('bcrypt');
 const { isNumber } = require('util');
 app.set('view engine', 'ejs');
 app.use(express.json())
-app.use(express.urlencoded({ extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(session({
@@ -72,6 +72,29 @@ app.get('/users', async (req, res) => {
 //Sign In/Home Page 
 app.get('/login', (req, res) => {
   res.render('login', { errorMessage: '' })
+})
+
+app.get('/income:userID', async (req, res) => {
+  try {
+    if (req.session.isAuthenticated) {
+      const foundUser = await Users.findOne({ where: { id: req.params.userID } });
+      if (!foundUser) {
+        return res.status(404).send('User not found'); // Handle the case when the user is not found
+      }
+      let userName = foundUser.dataValues.Name;
+      let userExpenses = foundUser.dataValues.Expenses
+      let userIncome = foundUser.dataValues.Income
+      let userNet = foundUser.dataValues.Net
+      // User is authenticated, proceed to the dashboard
+      res.render('income', { userName, userExpenses, userIncome, userNet });
+    } else {
+      // User is not authenticated, redirect to the login page
+      res.redirect('/login');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error'); // Handle other unexpected errors
+  }
 })
 
 app.get('/', (req, res) => {
@@ -139,7 +162,7 @@ app.post('/sign-up', async (req, res) => {
   if (Password.length < 8) {
     return res.render('sign-up', { errorMessage: 'Passwords must be at least 8 characters' });
   }
-  
+
   // if (Password != /[-._!"`'#%&,:;<>=@{}~\$\(\)\*\+\/\\\?\[\]\^\|]+/ || Password != /^[a-zA-Z]/ || Password != /^[0-9]/){
   //   console.log("Special Characters: ", specialCharacters)
   //   console.log("Numbers: ", numbers)
@@ -175,11 +198,11 @@ app.post('/sign-up', async (req, res) => {
         Password: hash,
         ReEnterPassword: hash
       });
-      
+
       // If successful registration, set session data
       req.session.isAuthenticated = true;
       req.session.userID = newUser.id; // Store the user's ID in the session
-  
+
       // Redirect to the dashboard or another protected route
       res.redirect(`/dashboard/${newUser.id}`);
     } catch (error) {
@@ -199,7 +222,7 @@ app.post('/sign-up', async (req, res) => {
     level: 'info',
     message: `Password: ${Password}`,
     timestamp: new Date().toLocaleString()
-});
+  });
 })
 
 // Sign in for Returning Users
@@ -271,7 +294,7 @@ app.delete('/deleteaccount', async (req, res) => {
       return;
     }
     if (result) {
-       existingUser.destroy()
+      existingUser.destroy()
       return res.redirect('sign-up')
 
     } else {
@@ -433,6 +456,7 @@ app.get('/userExpense/:UserID', async (req, res) => {
   const userExpense = await Expense_Transaction.findAll({ where: { UserID: req.params.UserID } });
   res.send(userExpense)
 })
+
 app.listen(port, () => {
   console.log(`Server is running on port 3000`);
 })

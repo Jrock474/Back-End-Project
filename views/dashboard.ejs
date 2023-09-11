@@ -15,13 +15,6 @@
     </header>
 </div>
 
-
-<div class="w3-container">
-    <a href="/login"><p>link to login </p></a>
-
-    <a href="/sign-up"><p>link to sign-up </p></a>
-    <a href="/logout"><p>log out </p></a>
-</div>
     <main>
 
     <section class="budget-form">
@@ -29,10 +22,14 @@
         <div class="input-group">
             <label for="income">Income:</label>
             <h3><%= userIncome %> </h3>
+            <input type="number" id="addIncome" placeholder="Please enter your income">
+            <button id="addIncomeButton">Add Expense</button>
         </div>
         <div class="input-group">
             <label for="expenses">Expenses:</label>
             <h3><%= userExpenses %> </h3>
+            <input type="number" id="addExpenses" placeholder="Please enter your expenses">
+            <button id="addExpensesButton">Add Expense</button>
         
         </div>
         <div class="input-group">
