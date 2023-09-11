@@ -873,3 +873,8 @@
 {"body":{"Email":"flash@gmail.com","Password":"flash12345"},"level":"info","method":"POST","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/11/2023, 10:33:58 AM","url":"/login"}
 {"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/44"},"service":"finance-budget","timestamp":"9/11/2023, 10:33:58 AM","url":"/dashboard/44"}
 {"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/script.js"},"service":"finance-budget","timestamp":"9/11/2023, 10:33:58 AM","url":"/dashboard/script.js"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/11/2023, 10:41:41 AM","url":"/login"}
+{"body":{"Email":"flash@gmail.com","Password":"flash1234"},"level":"info","method":"POST","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/11/2023, 10:42:30 AM","url":"/login"}
+{"body":{"Email":"flash@gmail.com","Password":"flash12345"},"level":"info","method":"POST","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"9/11/2023, 10:42:39 AM","url":"/login"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/44"},"service":"finance-budget","timestamp":"9/11/2023, 10:42:39 AM","url":"/dashboard/44"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/script.js"},"service":"finance-budget","timestamp":"9/11/2023, 10:42:39 AM","url":"/dashboard/script.js"}
