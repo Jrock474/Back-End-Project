@@ -69,12 +69,16 @@ app.get('/users', async (req, res) => {
   res.send(allUsers)
 })
 
-//Sign In Page
+//Sign In/Home Page 
 app.get('/login', (req, res) => {
   res.render('login', { errorMessage: '' })
 })
 
-//Home Page 
+app.get('/', (req, res) => {
+  res.render('login', { errorMessage: '' })
+})
+
+//Sign up 
 app.get('/sign-up', (req, res) => {
   res.render('sign-up', { errorMessage: '' })
 })
@@ -205,8 +209,8 @@ app.post('/login', async (req, res) => {
       return;
     }
     if (result) {
-      // res.render('dashboard', {userName});
-      res.redirect(`/dashboard/${userID}`);
+      res.render('dashboard', {userName});
+      // res.redirect(`/dashboard/${userID}`);
     } else {
       res.render('login', { errorMessage: 'Invalid Login' });
     }
