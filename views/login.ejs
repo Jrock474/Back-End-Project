@@ -1,14 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background-image: url('/images/Money_tree_growth.jpg');
+  background-size: cover;
+}
+</style>
+</head>
+<body>
+
+<h2><p>Getting to the root of the $$$</p></h2>
+
+</body>
+
+</html>
+<link rel="stylesheet" href="/login.css">
+
 <form action="/login" method="post">
     <div>
         <legend> Welcome Back! </legend>
-            <% { %> 
-                Email:     <input type="email" name="Email" placeholder="Email" /><br><br>
-                Password:  <input type="password" name="Password"  placeholder="Password"/><br><br>
+        
+        <% { %> 
+            Email:     <input type="email" name="Email" placeholder="Email" /><br><br>
+            Password:  <input type="password" name="Password"  placeholder="Password"/><br><br>
             <% } %>
-    </div>
-    <input type="submit" value="Log In"/><br><br>
-    <% if (errorMessage) { %>
-        <p class="error-message"><%= errorMessage %></p>
-    <% } %>
-</form>
-<a href ="/sign-up">Sign Up</a>
+        </div>
+        <input type="submit" value="Log In"/><br><br>
+        <% if (errorMessage) { %>
+            <p class="error-message"><%= errorMessage %></p>
+            <% } %>
+        </form>
+        <a href ="/sign-up">Sign Up</a>
+    </body>
