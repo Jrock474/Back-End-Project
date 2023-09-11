@@ -1,0 +1,42 @@
+.header {
+    position: relative;
+    width: 100%;
+    height: 30%;
+    font-size: 40px;
+	text-align: center;
+    outline: 2px 
+    /* background-color: #425e6a; */
+}
+.head {
+    margin: 20px;
+    font-size: relative;
+}
+
+.header-inner {
+    position: absolute;
+    background-image: url(/images/Money_pen.jpg);
+    background-size: cover;
+    /* background-position-x: ; */
+    width: 100%;
+    height: 100%;
+}
+/* 
+.image {
+	background-image: url();
+	height: 200px;
+}
+
+.header {
+	padding-top: 50px;
+	color: 	#425e6a;
+	font-size: 40px;
+	text-align: center;
+} */
+
+
+body {
+    font-family: "Georgia", sans-serif;
+    background-color: #768076;
+    margin: 20;
+    padding: 20;
+}
