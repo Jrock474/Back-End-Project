@@ -1081,3 +1081,11 @@
 {"body":{"Amount":5432,"Description":"Running Shoes"},"level":"info","method":"POST","parameters":{"0":"/addExpense/44"},"service":"finance-budget","timestamp":"9/11/2023, 11:51:47 AM","url":"/addExpense/44"}
 {"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/44"},"service":"finance-budget","timestamp":"9/11/2023, 11:51:51 AM","url":"/dashboard/44"}
 {"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/script.js"},"service":"finance-budget","timestamp":"9/11/2023, 11:51:51 AM","url":"/dashboard/script.js"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/"},"service":"finance-budget","timestamp":"10/17/2023, 11:50:12 AM","url":"/"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"10/17/2023, 11:50:29 AM","url":"/sign-up"}
+{"body":{"Email":"sally@pj.com","Name":"Sally Jackson","Password":"bluecookies","ReEnterPassword":"bluecookies"},"level":"info","method":"POST","parameters":{"0":"/sign-up"},"service":"finance-budget","timestamp":"10/17/2023, 11:50:53 AM","url":"/sign-up"}
+{"level":"info","message":"Password: bluecookies","service":"finance-budget","timestamp":"10/17/2023, 11:50:53 AM"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/57"},"service":"finance-budget","timestamp":"10/17/2023, 11:50:53 AM","url":"/dashboard/57"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/dashboard/script.js"},"service":"finance-budget","timestamp":"10/17/2023, 11:50:53 AM","url":"/dashboard/script.js"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/logout"},"service":"finance-budget","timestamp":"10/17/2023, 11:51:03 AM","url":"/logout"}
+{"body":{},"level":"info","method":"GET","parameters":{"0":"/login"},"service":"finance-budget","timestamp":"10/17/2023, 11:51:03 AM","url":"/login"}
